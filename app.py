@@ -165,10 +165,13 @@ def inject_css(watermark: bool = False) -> None:
             border-radius: 14px;
             margin-bottom: 0.5rem;
         }}
+
+
       /* Garantir legibilidade no mobile/tema escuro */
-      .hero { color: #111827; }
-      .hero-title { color: #111827; }
-      .hero-sub { color: rgba(17, 24, 39, 0.75); }
+     .hero {{ color: #111827; }}
+     .hero-title {{ color: #111827; }}
+     .hero-sub {{ color: rgba(17, 24, 39, 0.75); }}
+
 
 
         {watermark_css}
