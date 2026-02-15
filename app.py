@@ -474,7 +474,7 @@ def screen_home():
 
 
 def screen_api():
-    inject_css(watermark=True)
+    inject_css(watermark=False)
     render_logo()
     render_progress()
 
@@ -532,7 +532,7 @@ def screen_api():
 
 
 def screen_trans_vieses():
-    inject_css(watermark=True)
+    inject_css(watermark=False)
     render_logo()
     render_progress()
 
@@ -567,7 +567,7 @@ def screen_trans_vieses():
 
 
 def screen_vieses():
-    inject_css(watermark=True)
+    inject_css(watermark=False)
     render_logo()
     render_progress()
 
