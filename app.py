@@ -447,7 +447,6 @@ def screen_home():
     )
 
     st.write("")
-    st.markdown('<div class="card">', unsafe_allow_html=True)
     nome = st.text_input("Digite seu nome", value=st.session_state.nome, placeholder="Ex.: Aloísio Lopes")
     st.session_state.nome = nome.strip()
 
@@ -472,7 +471,6 @@ def screen_home():
             "orientação comportamental e não substitui análise profissional.</div>",
             unsafe_allow_html=True,
         )
-    st.markdown("</div>", unsafe_allow_html=True)
 
 
 def screen_api():
@@ -495,7 +493,6 @@ def screen_api():
     )
     st.write("")
 
-    st.markdown('<div class="card">', unsafe_allow_html=True)
     st.markdown(f"### {q['texto']}")
 
     op_labels = [f"{op['codigo']}) {op['descricao']}" for op in q["opcoes"]]
@@ -532,7 +529,6 @@ def screen_api():
             unsafe_allow_html=True,
         )
 
-    st.markdown("</div>", unsafe_allow_html=True)
 
 
 def screen_trans_vieses():
@@ -591,7 +587,6 @@ def screen_vieses():
     )
     st.write("")
 
-    st.markdown('<div class="card">', unsafe_allow_html=True)
     st.markdown(f"### {item['texto']}")
 
     choice = st.radio(
@@ -624,7 +619,6 @@ def screen_vieses():
             unsafe_allow_html=True,
         )
 
-    st.markdown("</div>", unsafe_allow_html=True)
 
 
 def screen_resultado():
