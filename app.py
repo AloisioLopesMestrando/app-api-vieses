@@ -7,7 +7,11 @@ import streamlit as st
 
 from data.perguntas_api import PERGUNTAS_API
 from data.perguntas_vieses import PERGUNTAS_VIESES
-from data.interpretacoes import INTERPRETACOES
+from data.interpretacoes import (
+    ANALISES_INTEGRADAS,
+    DEFINICOES_VIESES,
+    INTERPRETACOES,
+)
 
 from utils.calculos import (
     classificar_perfil,
@@ -197,6 +201,34 @@ def inject_css(watermark: bool = False) -> None:
             padding: 0.85rem 1rem;
             margin-top: 1rem;
         }}
+        .integrated-analysis {{
+            background: #ffffff;
+            border: 1px solid rgba(27,94,32,0.14);
+            border-left: 6px solid #2E7D32;
+            box-shadow: 0 8px 20px rgba(16, 24, 40, 0.07);
+            border-radius: 8px;
+            padding: 1.15rem 1.2rem;
+            margin-bottom: 1rem;
+        }}
+        .integrated-analysis h3 {{
+            color: #1B5E20;
+            font-size: 1.15rem;
+            margin: 0 0 0.9rem;
+        }}
+        .integrated-analysis p {{
+            color: #27313D;
+            line-height: 1.55;
+            margin: 0.45rem 0 0.85rem;
+        }}
+        .integrated-analysis ul {{
+            color: #27313D;
+            line-height: 1.55;
+            margin: 0.35rem 0 0;
+            padding-left: 1.25rem;
+        }}
+        .integrated-analysis li {{
+            margin-bottom: 0.3rem;
+        }}
         .muted {{
             color: rgba(0,0,0,0.62);
         }}
@@ -326,7 +358,7 @@ def cache_results_if_needed():
     if st.session_state.perfil_api is None or st.session_state.medias_vieses is None:
         perfil, score_api = classificar_perfil(PERGUNTAS_API, st.session_state.respostas_api)
         medias = calcular_media_vieses(PERGUNTAS_VIESES, st.session_state.respostas_vieses)
-        top = top_vieses(medias, top_n=3)
+        top = top_vieses(medias, top_n=2)
 
         st.session_state.perfil_api = perfil
         st.session_state.score_api = score_api
@@ -374,6 +406,30 @@ def render_ranking_vieses(ranking):
     st.markdown(ranking_html, unsafe_allow_html=True)
 
 
+def render_analise_integrada(perfil: str, vies: str, media: float):
+    definicao = DEFINICOES_VIESES.get(vies, "")
+    analise = ANALISES_INTEGRADAS.get(perfil, {}).get(vies, {})
+    indicacoes = analise.get("indicacoes", [])
+    media_formatada = f"{media:.2f}".replace(".", ",")
+    indicacoes_html = "".join(f"<li>{item}</li>" for item in indicacoes)
+
+    bloco_html = (
+        '<div class="integrated-analysis">'
+        f'<h3>Perfil {perfil} + {vies} '
+        f'<span class="muted">(média: {media_formatada}/5)</span></h3>'
+        '<p><strong>O que é esse viés:</strong><br>'
+        f'{definicao}</p>'
+        f'<p><strong>Leitura integrada com o perfil {perfil}:</strong><br>'
+        f'{analise.get("leitura", "")}</p>'
+        '<p><strong>Principal risco comportamental:</strong><br>'
+        f'{analise.get("risco", "")}</p>'
+        '<p><strong>Indicações práticas:</strong></p>'
+        f'<ul>{indicacoes_html}</ul>'
+        '</div>'
+    )
+    st.markdown(bloco_html, unsafe_allow_html=True)
+
+
 # -----------------------------
 # PDF generator (Respondente)
 # -----------------------------
@@ -397,7 +453,15 @@ def draw_soft_gradient(c: canvas.Canvas, x, y, w, h, top_hex="#E8F5E9", bottom_h
         c.rect(x, yi, w, h / steps, fill=1, stroke=0)
 
 
-def make_pdf_bytes(nome: str, perfil: str, score_api: int, radar_png: bytes, top_list, interpretacoes: dict) -> bytes:
+def make_pdf_bytes(
+    nome: str,
+    perfil: str,
+    score_api: int,
+    radar_png: bytes,
+    top_list,
+    definicoes: dict,
+    analises_integradas: dict,
+) -> bytes:
     buffer = BytesIO()
     c = canvas.Canvas(buffer, pagesize=A4)
     W, H = A4
@@ -457,66 +521,107 @@ def make_pdf_bytes(nome: str, perfil: str, score_api: int, radar_png: bytes, top
         c.setFillColorRGB(0.3, 0.3, 0.3)
         c.drawString(2 * cm, radar_y + 3 * cm, "Não foi possível renderizar o gráfico.")
 
-    # Suggestions title
-    text_y = radar_y - 0.9 * cm
-    c.setFillColorRGB(0.10, 0.12, 0.16)
-    c.setFont("Helvetica-Bold", 12)
-    c.drawString(1.6 * cm, text_y, "Sugestões para o respondente (vieses mais relevantes)")
+    c.setFillColorRGB(0.35, 0.35, 0.35)
+    c.setFont("Helvetica", 8)
+    c.drawString(
+        1.6 * cm,
+        1.2 * cm,
+        "Material educacional. Não substitui aconselhamento profissional. Resultado baseado em autorrelato.",
+    )
 
-    # Suggestions blocks (top vieses)
-    y = text_y - 0.7 * cm
-    c.setFont("Helvetica", 10)
-    c.setFillColorRGB(0.20, 0.22, 0.26)
-
-    def draw_wrapped(text, x, y, max_w, leading=13):
-        """Simple wrap for reportlab."""
+    def draw_wrapped(text, x, y, max_w, font_name="Helvetica", font_size=10, leading=13):
         words = text.split()
         line = ""
         lines = []
         for w in words:
             test = (line + " " + w).strip()
-            if c.stringWidth(test, "Helvetica", 10) <= max_w:
+            if c.stringWidth(test, font_name, font_size) <= max_w:
                 line = test
             else:
                 lines.append(line)
                 line = w
         if line:
             lines.append(line)
+        c.setFont(font_name, font_size)
         for ln in lines:
             c.drawString(x, y, ln)
             y -= leading
         return y
 
-    max_w = W - 3.2 * cm
-    for vies, media in top_list:
-        bloco = interpretacoes.get(vies, {}).get("respondente_txt", "")
-        # Heading
+    for posicao, (vies, media) in enumerate(top_list[:2], start=1):
+        c.showPage()
+        draw_soft_gradient(c, 0, 0, W, H, top_hex="#E8F5E9", bottom_hex="#FFFFFF", steps=28)
+
+        if Path(LOGO_PATH).exists():
+            logo_img = ImageReader(LOGO_PATH)
+            c.drawImage(logo_img, 1.6 * cm, H - 2.2 * cm, width=3.2 * cm, height=1.2 * cm, mask="auto")
+
+        c.setFillColorRGB(0.10, 0.12, 0.16)
+        c.setFont("Helvetica-Bold", 16)
+        c.drawString(5.4 * cm, H - 1.65 * cm, "Sugestão integrada ao perfil")
+
+        media_formatada = f"{media:.2f}".replace(".", ",")
+        y = H - 3.2 * cm
         c.setFillColorRGB(0.10, 0.35, 0.16)
+        c.setFont("Helvetica-Bold", 13)
+        c.drawString(1.6 * cm, y, f"{posicao}. Perfil {perfil} + {vies}")
+        c.setFillColorRGB(0.32, 0.35, 0.38)
+        c.setFont("Helvetica", 9)
+        c.drawRightString(W - 1.6 * cm, y, f"Média: {media_formatada}/5")
+        y -= 0.8 * cm
+
+        definicao = definicoes.get(vies, "")
+        analise = analises_integradas.get(perfil, {}).get(vies, {})
+
+        secoes = [
+            ("O que é esse viés:", definicao),
+            (f"Leitura integrada com o perfil {perfil}:", analise.get("leitura", "")),
+            ("Principal risco comportamental:", analise.get("risco", "")),
+        ]
+
+        for titulo, texto in secoes:
+            c.setFillColorRGB(0.10, 0.12, 0.16)
+            c.setFont("Helvetica-Bold", 10)
+            c.drawString(1.6 * cm, y, titulo)
+            y -= 0.45 * cm
+            c.setFillColorRGB(0.20, 0.22, 0.26)
+            y = draw_wrapped(
+                texto,
+                1.6 * cm,
+                y,
+                W - 3.2 * cm,
+                font_name="Helvetica",
+                font_size=10,
+                leading=13,
+            )
+            y -= 0.45 * cm
+
+        c.setFillColorRGB(0.10, 0.12, 0.16)
         c.setFont("Helvetica-Bold", 10)
-        c.drawString(1.6 * cm, y, f"• {vies} (média: {media:.2f})")
-        y -= 0.45 * cm
+        c.drawString(1.6 * cm, y, "Indicações práticas:")
+        y -= 0.5 * cm
 
-        # Body
-        c.setFillColorRGB(0.20, 0.22, 0.26)
-        c.setFont("Helvetica", 10)
-        y = draw_wrapped(bloco, 2.0 * cm, y, max_w - 0.4 * cm, leading=13)
-        y -= 0.35 * cm
+        for indicacao in analise.get("indicacoes", []):
+            c.setFillColorRGB(0.20, 0.22, 0.26)
+            y = draw_wrapped(
+                f"- {indicacao}",
+                1.9 * cm,
+                y,
+                W - 3.8 * cm,
+                font_name="Helvetica",
+                font_size=10,
+                leading=13,
+            )
+            y -= 0.18 * cm
 
-        # New page if needed
-        if y < 2.3 * cm:
-            # footer
-            c.setFillColorRGB(0.35, 0.35, 0.35)
-            c.setFont("Helvetica", 8)
-            c.drawString(1.6 * cm, 1.2 * cm, "Material educacional. Não substitui aconselhamento profissional.")
-            c.showPage()
-            draw_soft_gradient(c, 0, 0, W, H, top_hex="#E8F5E9", bottom_hex="#FFFFFF", steps=28)
-            y = H - 2.2 * cm
+        c.setFillColorRGB(0.35, 0.35, 0.35)
+        c.setFont("Helvetica", 8)
+        c.drawString(
+            1.6 * cm,
+            1.2 * cm,
+            "Material educacional. Não substitui aconselhamento profissional. Resultado baseado em autorrelato.",
+        )
 
-    # Footer
-    c.setFillColorRGB(0.35, 0.35, 0.35)
-    c.setFont("Helvetica", 8)
-    c.drawString(1.6 * cm, 1.2 * cm, "Material educacional. Não substitui aconselhamento profissional. "
-                                    "Resultado baseado em autorrelato.")
     c.save()
     buffer.seek(0)
     return buffer.read()
@@ -841,7 +946,8 @@ def screen_resultado():
             score_api=score_api,
             radar_png=radar_png,
             top_list=top,
-            interpretacoes=INTERPRETACOES,
+            definicoes=DEFINICOES_VIESES,
+            analises_integradas=ANALISES_INTEGRADAS,
         )
         st.download_button(
             "🖨️ Gerar PDF",
@@ -870,23 +976,11 @@ def screen_resultado():
             st.rerun()
 
     st.write("")
-    st.markdown("## 🧠 Sugestões para o respondente")
+    st.markdown("## 🧠 Sugestões integradas ao perfil")
+    st.caption("Leitura dos dois vieses mais predominantes em conjunto com o perfil de investidor.")
 
-    for vies, media in top:
-        bloco_html = INTERPRETACOES.get(vies, {}).get("respondente_html", "")
-        bloco_html = bloco_html.replace("```", "").replace("</div>", "").strip()
- 
-        st.markdown(
-            f"""
-            <div class="card" style="border-left:8px solid {SICREDI_GREEN};">
-              <h3 style="margin-top:0;">{vies} <span class="muted">(média: {media:.2f})</span></h3>
-              <div class="soft-card" style="margin-top:0.85rem;">
-                {bloco_html}
-              </div>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
+    for vies, media in top[:2]:
+        render_analise_integrada(perfil, vies, media)
 
     st.caption("Obs.: este resultado é educacional e não substitui uma análise profissional completa.")
 
