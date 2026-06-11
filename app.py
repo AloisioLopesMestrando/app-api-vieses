@@ -456,8 +456,8 @@ def draw_soft_gradient(c: canvas.Canvas, x, y, w, h, top_hex="#E8F5E9", bottom_h
 def make_pdf_bytes(
     nome: str,
     perfil: str,
-    score_api: int,
     radar_png: bytes,
+    ranking,
     top_list,
     definicoes: dict,
     analises_integradas: dict,
@@ -465,162 +465,318 @@ def make_pdf_bytes(
     buffer = BytesIO()
     c = canvas.Canvas(buffer, pagesize=A4)
     W, H = A4
+    margin_x = 1.45 * cm
+    content_w = W - (2 * margin_x)
+    green = hex_to_rgb01("#2E7D32")
+    green_dark = hex_to_rgb01("#1B5E20")
+    text_dark = hex_to_rgb01("#1F2937")
+    muted = hex_to_rgb01("#667085")
+    border = hex_to_rgb01("#D7E5D8")
 
-    # Background soft gradient (Option B)
-    draw_soft_gradient(c, 0, 0, W, H, top_hex="#E8F5E9", bottom_hex="#FFFFFF", steps=28)
+    def draw_page_background():
+        draw_soft_gradient(c, 0, 0, W, H, top_hex="#F1F8F2", bottom_hex="#FFFFFF", steps=30)
+        c.setFillColorRGB(*green_dark)
+        c.rect(0, H - 0.18 * cm, W, 0.18 * cm, fill=1, stroke=0)
 
-    # Header band
-    band_h = 3.3 * cm
-    draw_soft_gradient(c, 0, H - band_h, W, band_h, top_hex="#DFF3E1", bottom_hex="#F7FBF7", steps=18)
+    def draw_header(title, subtitle=""):
+        draw_page_background()
+        if Path(LOGO_PATH).exists():
+            logo_img = ImageReader(LOGO_PATH)
+            c.drawImage(
+                logo_img,
+                margin_x,
+                H - 2.05 * cm,
+                width=3.25 * cm,
+                height=1.2 * cm,
+                mask="auto",
+                preserveAspectRatio=True,
+            )
+        c.setFillColorRGB(*text_dark)
+        c.setFont("Helvetica-Bold", 17)
+        c.drawString(5.25 * cm, H - 1.35 * cm, title)
+        if subtitle:
+            c.setFillColorRGB(*muted)
+            c.setFont("Helvetica", 9)
+            c.drawString(5.25 * cm, H - 1.82 * cm, subtitle)
+        c.setStrokeColorRGB(*border)
+        c.line(margin_x, H - 2.35 * cm, W - margin_x, H - 2.35 * cm)
 
-    # Logo
-    if Path(LOGO_PATH).exists():
-        logo_img = ImageReader(LOGO_PATH)
-        c.drawImage(logo_img, 1.6 * cm, H - 2.7 * cm, width=4.0 * cm, height=1.5 * cm, mask="auto")
+    def draw_footer(page_number):
+        c.setStrokeColorRGB(*border)
+        c.line(margin_x, 1.35 * cm, W - margin_x, 1.35 * cm)
+        c.setFillColorRGB(*muted)
+        c.setFont("Helvetica", 7.5)
+        c.drawString(
+            margin_x,
+            0.92 * cm,
+            "Material educacional. Não substitui aconselhamento profissional.",
+        )
+        c.drawRightString(W - margin_x, 0.92 * cm, f"Página {page_number}")
 
-    # Title
-    c.setFillColorRGB(0.10, 0.12, 0.16)
-    c.setFont("Helvetica-Bold", 18)
-    c.drawString(6.2 * cm, H - 2.2 * cm, "Meu Perfil de Investidor")
-
-    # Subtitle
-    c.setFont("Helvetica", 10)
-    c.setFillColorRGB(0.25, 0.28, 0.32)
-    c.drawString(6.2 * cm, H - 2.8 * cm, "Resultado do respondente (uso educacional)")
-
-    # Name + date
-    c.setFillColorRGB(0.12, 0.14, 0.18)
-    c.setFont("Helvetica", 10)
-    c.drawString(1.6 * cm, H - 3.9 * cm, f"Respondente: {nome}")
-    c.drawRightString(W - 1.6 * cm, H - 3.9 * cm, f"Data: {datetime.now().strftime('%d/%m/%Y')}")
-
-    # Profile box
-    box_y = H - 6.1 * cm
-    box_h = 2.0 * cm
-    c.setFillColorRGB(0.90, 0.97, 0.91)  # light green
-    c.setStrokeColorRGB(0.70, 0.86, 0.72)
-    c.roundRect(1.6 * cm, box_y, W - 3.2 * cm, box_h, 12, fill=1, stroke=1)
-
-    c.setFillColorRGB(0.10, 0.12, 0.16)
-    c.setFont("Helvetica-Bold", 12)
-    c.drawString(2.2 * cm, box_y + 1.25 * cm, "Perfil de risco (API):")
-    c.setFillColorRGB(0.10, 0.35, 0.16)
-    c.drawString(6.1 * cm, box_y + 1.25 * cm, f"{perfil}")
-    c.setFillColorRGB(0.25, 0.28, 0.32)
-    c.setFont("Helvetica", 10)
-    c.drawString(2.2 * cm, box_y + 0.55 * cm, f"Pontuação: {score_api}")
-
-    # Radar
-    radar_y = H - 14.4 * cm
-    radar_w = W - 3.2 * cm
-    radar_h = 7.6 * cm
-    try:
-        img = ImageReader(BytesIO(radar_png))
-        c.drawImage(img, 1.6 * cm, radar_y, width=radar_w, height=radar_h, preserveAspectRatio=True, anchor="c")
-    except Exception:
-        c.setFillColorRGB(0.3, 0.3, 0.3)
-        c.drawString(2 * cm, radar_y + 3 * cm, "Não foi possível renderizar o gráfico.")
-
-    c.setFillColorRGB(0.35, 0.35, 0.35)
-    c.setFont("Helvetica", 8)
-    c.drawString(
-        1.6 * cm,
-        1.2 * cm,
-        "Material educacional. Não substitui aconselhamento profissional. Resultado baseado em autorrelato.",
-    )
-
-    def draw_wrapped(text, x, y, max_w, font_name="Helvetica", font_size=10, leading=13):
+    def wrap_lines(text, max_w, font_name="Helvetica", font_size=10):
         words = text.split()
         line = ""
         lines = []
-        for w in words:
-            test = (line + " " + w).strip()
+        for word in words:
+            test = (line + " " + word).strip()
             if c.stringWidth(test, font_name, font_size) <= max_w:
                 line = test
             else:
-                lines.append(line)
-                line = w
+                if line:
+                    lines.append(line)
+                line = word
         if line:
             lines.append(line)
+        return lines
+
+    def draw_wrapped(text, x, y, max_w, font_name="Helvetica", font_size=10, leading=13):
+        lines = wrap_lines(text, max_w, font_name, font_size)
         c.setFont(font_name, font_size)
-        for ln in lines:
-            c.drawString(x, y, ln)
+        for line in lines:
+            c.drawString(x, y, line)
             y -= leading
         return y
 
-    for posicao, (vies, media) in enumerate(top_list[:2], start=1):
-        c.showPage()
-        draw_soft_gradient(c, 0, 0, W, H, top_hex="#E8F5E9", bottom_hex="#FFFFFF", steps=28)
+    def draw_summary_item(x, y, w, label, value):
+        c.setFillColorRGB(0.97, 0.99, 0.97)
+        c.setStrokeColorRGB(*border)
+        c.roundRect(x, y, w, 1.65 * cm, 7, fill=1, stroke=1)
+        c.setFillColorRGB(*muted)
+        c.setFont("Helvetica", 7.5)
+        c.drawString(x + 0.35 * cm, y + 1.08 * cm, label.upper())
+        c.setFillColorRGB(*green_dark)
+        c.setFont("Helvetica-Bold", 10)
+        value_lines = wrap_lines(value, w - 0.7 * cm, "Helvetica-Bold", 10)
+        c.drawString(x + 0.35 * cm, y + 0.53 * cm, value_lines[0] if value_lines else "")
 
-        if Path(LOGO_PATH).exists():
-            logo_img = ImageReader(LOGO_PATH)
-            c.drawImage(logo_img, 1.6 * cm, H - 2.2 * cm, width=3.2 * cm, height=1.2 * cm, mask="auto")
+    # Página 1: resumo visual
+    draw_header("Meu Perfil de Investidor", "Mapa comportamental e leitura dos principais vieses")
+    c.setFillColorRGB(*text_dark)
+    c.setFont("Helvetica", 9)
+    c.drawString(margin_x, H - 3.0 * cm, f"Respondente: {nome}")
+    c.drawRightString(W - margin_x, H - 3.0 * cm, f"Data: {datetime.now().strftime('%d/%m/%Y')}")
 
-        c.setFillColorRGB(0.10, 0.12, 0.16)
-        c.setFont("Helvetica-Bold", 16)
-        c.drawString(5.4 * cm, H - 1.65 * cm, "Sugestão integrada ao perfil")
+    summary_y = H - 5.15 * cm
+    gap = 0.35 * cm
+    item_w = (content_w - (2 * gap)) / 3
+    principal = top_list[0][0] if top_list else "-"
+    segundo = top_list[1][0] if len(top_list) > 1 else "-"
+    draw_summary_item(margin_x, summary_y, item_w, "Perfil API", perfil)
+    draw_summary_item(margin_x + item_w + gap, summary_y, item_w, "Viés predominante", principal)
+    draw_summary_item(margin_x + (2 * (item_w + gap)), summary_y, item_w, "Segundo ponto", segundo)
 
-        media_formatada = f"{media:.2f}".replace(".", ",")
-        y = H - 3.2 * cm
-        c.setFillColorRGB(0.10, 0.35, 0.16)
-        c.setFont("Helvetica-Bold", 13)
-        c.drawString(1.6 * cm, y, f"{posicao}. Perfil {perfil} + {vies}")
-        c.setFillColorRGB(0.32, 0.35, 0.38)
+    c.setFillColorRGB(*text_dark)
+    c.setFont("Helvetica-Bold", 14)
+    c.drawString(margin_x, H - 6.2 * cm, "Mapa comportamental do investidor")
+    c.setFillColorRGB(*muted)
+    c.setFont("Helvetica", 8.5)
+    c.drawString(
+        margin_x,
+        H - 6.68 * cm,
+        "Escala de 1 a 5: quanto maior a média, maior a presença do viés.",
+    )
+
+    visual_top = H - 7.25 * cm
+    visual_bottom = 4.1 * cm
+    visual_h = visual_top - visual_bottom
+    radar_x = margin_x
+    radar_w = 9.1 * cm
+    ranking_x = radar_x + radar_w + 0.45 * cm
+    ranking_w = W - margin_x - ranking_x
+
+    c.setFillColorRGB(1, 1, 1)
+    c.setStrokeColorRGB(*border)
+    c.roundRect(radar_x, visual_bottom, radar_w, visual_h, 8, fill=1, stroke=1)
+    c.roundRect(ranking_x, visual_bottom, ranking_w, visual_h, 8, fill=1, stroke=1)
+
+    c.setFillColorRGB(*text_dark)
+    c.setFont("Helvetica-Bold", 10)
+    c.drawString(radar_x + 0.45 * cm, visual_top - 0.65 * cm, "Visão geral")
+    c.drawString(ranking_x + 0.45 * cm, visual_top - 0.65 * cm, "Ranking dos vieses")
+
+    try:
+        img = ImageReader(BytesIO(radar_png))
+        c.drawImage(
+            img,
+            radar_x + 0.35 * cm,
+            visual_bottom + 1.1 * cm,
+            width=radar_w - 0.7 * cm,
+            height=visual_h - 2.0 * cm,
+            preserveAspectRatio=True,
+            anchor="c",
+            mask="auto",
+        )
+    except Exception:
+        c.setFillColorRGB(*muted)
         c.setFont("Helvetica", 9)
-        c.drawRightString(W - 1.6 * cm, y, f"Média: {media_formatada}/5")
-        y -= 0.8 * cm
+        c.drawCentredString(
+            radar_x + (radar_w / 2),
+            visual_bottom + (visual_h / 2),
+            "Não foi possível renderizar o gráfico.",
+        )
 
+    rank_y = visual_top - 1.55 * cm
+    bar_w = ranking_w - 0.9 * cm
+    for posicao, (vies, media) in enumerate(ranking, start=1):
+        media_formatada = f"{media:.2f}".replace(".", ",")
+        c.setFillColorRGB(*text_dark)
+        c.setFont("Helvetica-Bold", 8.6)
+        c.drawString(ranking_x + 0.45 * cm, rank_y, f"{posicao}. {vies}")
+        c.setFillColorRGB(*green_dark)
+        c.setFont("Helvetica-Bold", 8.6)
+        c.drawRightString(ranking_x + ranking_w - 0.45 * cm, rank_y, f"{media_formatada}/5")
+
+        track_y = rank_y - 0.4 * cm
+        c.setFillColorRGB(0.90, 0.92, 0.90)
+        c.roundRect(ranking_x + 0.45 * cm, track_y, bar_w, 0.22 * cm, 3, fill=1, stroke=0)
+        c.setFillColorRGB(*green)
+        c.roundRect(
+            ranking_x + 0.45 * cm,
+            track_y,
+            bar_w * min(max(media / 5, 0), 1),
+            0.22 * cm,
+            3,
+            fill=1,
+            stroke=0,
+        )
+        c.setFillColorRGB(*muted)
+        c.setFont("Helvetica", 7.7)
+        c.drawString(
+            ranking_x + 0.45 * cm,
+            track_y - 0.38 * cm,
+            classificar_intensidade(media),
+        )
+        rank_y -= 2.15 * cm
+
+    legend_y = visual_bottom + 0.55 * cm
+    c.setStrokeColorRGB(*border)
+    c.line(ranking_x + 0.45 * cm, legend_y + 0.55 * cm, ranking_x + ranking_w - 0.45 * cm, legend_y + 0.55 * cm)
+    c.setFillColorRGB(*muted)
+    c.setFont("Helvetica", 7.2)
+    c.drawString(ranking_x + 0.45 * cm, legend_y, "Baixa: 1,00–2,49")
+    c.drawCentredString(ranking_x + (ranking_w / 2), legend_y, "Moderada: 2,50–3,49")
+    c.drawRightString(ranking_x + ranking_w - 0.45 * cm, legend_y, "Alta: 3,50–5,00")
+    draw_footer(1)
+
+    # Página 2: duas leituras integradas lado a lado
+    c.showPage()
+    draw_header("Leituras integradas", "Perfil de investidor combinado aos dois vieses predominantes")
+
+    column_gap = 0.45 * cm
+    column_w = (content_w - column_gap) / 2
+    column_top = H - 3.05 * cm
+    column_bottom = 1.75 * cm
+    column_h = column_top - column_bottom
+
+    def draw_analysis_column(x, posicao, vies, media):
         definicao = definicoes.get(vies, "")
         analise = analises_integradas.get(perfil, {}).get(vies, {})
-
-        secoes = [
-            ("O que é esse viés:", definicao),
-            (f"Leitura integrada com o perfil {perfil}:", analise.get("leitura", "")),
-            ("Principal risco comportamental:", analise.get("risco", "")),
-        ]
-
-        for titulo, texto in secoes:
-            c.setFillColorRGB(0.10, 0.12, 0.16)
-            c.setFont("Helvetica-Bold", 10)
-            c.drawString(1.6 * cm, y, titulo)
-            y -= 0.45 * cm
-            c.setFillColorRGB(0.20, 0.22, 0.26)
-            y = draw_wrapped(
-                texto,
-                1.6 * cm,
-                y,
-                W - 3.2 * cm,
-                font_name="Helvetica",
-                font_size=10,
-                leading=13,
-            )
-            y -= 0.45 * cm
-
-        c.setFillColorRGB(0.10, 0.12, 0.16)
-        c.setFont("Helvetica-Bold", 10)
-        c.drawString(1.6 * cm, y, "Indicações práticas:")
-        y -= 0.5 * cm
-
-        for indicacao in analise.get("indicacoes", []):
-            c.setFillColorRGB(0.20, 0.22, 0.26)
-            y = draw_wrapped(
-                f"- {indicacao}",
-                1.9 * cm,
-                y,
-                W - 3.8 * cm,
-                font_name="Helvetica",
-                font_size=10,
-                leading=13,
-            )
-            y -= 0.18 * cm
-
-        c.setFillColorRGB(0.35, 0.35, 0.35)
-        c.setFont("Helvetica", 8)
-        c.drawString(
-            1.6 * cm,
-            1.2 * cm,
-            "Material educacional. Não substitui aconselhamento profissional. Resultado baseado em autorrelato.",
+        media_formatada = f"{media:.2f}".replace(".", ",")
+        total_chars = len(definicao) + len(analise.get("leitura", "")) + sum(
+            len(item) for item in analise.get("indicacoes", [])
         )
+        body_size = 8.6 if total_chars > 1100 else 9.0
+        body_leading = 11.2 if total_chars > 1100 else 11.8
+
+        c.setFillColorRGB(1, 1, 1)
+        c.setStrokeColorRGB(*border)
+        c.roundRect(x, column_bottom, column_w, column_h, 9, fill=1, stroke=1)
+        c.setFillColorRGB(*green)
+        c.roundRect(x, column_top - 0.18 * cm, column_w, 0.18 * cm, 5, fill=1, stroke=0)
+
+        text_x = x + 0.5 * cm
+        text_w = column_w - 1.0 * cm
+        title_lines = wrap_lines(f"{perfil} + {vies}", text_w, "Helvetica-Bold", 12)
+        sections = [
+            ("O que é esse viés", definicao),
+            (f"Leitura integrada com o perfil {perfil}", analise.get("leitura", "")),
+            ("Principal risco comportamental", analise.get("risco", "")),
+        ]
+        indications = analise.get("indicacoes", [])
+
+        content_height = 0.5 * cm
+        content_height += len(title_lines) * 0.48 * cm
+        content_height += 0.95 * cm
+        for section_index, (_, body) in enumerate(sections):
+            content_height += 0.4 * cm
+            content_height += len(wrap_lines(body, text_w, "Helvetica", body_size)) * body_leading
+            content_height += 0.32 * cm
+            if section_index < len(sections) - 1:
+                content_height += 0.18 * cm
+        content_height += 0.42 * cm
+        for item in indications:
+            content_height += len(
+                wrap_lines(item, text_w - 0.28 * cm, "Helvetica", body_size)
+            ) * body_leading
+            content_height += 0.14 * cm
+
+        centered_top = column_bottom + ((column_h + content_height) / 2)
+        cursor_y = min(column_top - 0.65 * cm, centered_top)
+
+        c.setFillColorRGB(*muted)
+        c.setFont("Helvetica-Bold", 7.5)
+        c.drawString(text_x, cursor_y, f"{posicao}º PONTO DE ATENÇÃO")
+        cursor_y -= 0.5 * cm
+
+        c.setFillColorRGB(*green_dark)
+        c.setFont("Helvetica-Bold", 12)
+        for line in title_lines:
+            c.drawString(text_x, cursor_y, line)
+            cursor_y -= 0.48 * cm
+
+        cursor_y -= 0.1 * cm
+        c.setFillColorRGB(0.93, 0.97, 0.93)
+        c.roundRect(text_x, cursor_y - 0.35 * cm, text_w, 0.48 * cm, 5, fill=1, stroke=0)
+        c.setFillColorRGB(*green_dark)
+        c.setFont("Helvetica-Bold", 7.7)
+        c.drawString(text_x + 0.18 * cm, cursor_y - 0.2 * cm, classificar_intensidade(media))
+        c.drawRightString(text_x + text_w - 0.18 * cm, cursor_y - 0.2 * cm, f"{media_formatada}/5")
+        cursor_y -= 0.85 * cm
+
+        for section_index, (title, body) in enumerate(sections):
+            c.setFillColorRGB(*green_dark)
+            c.setFont("Helvetica-Bold", 8.7)
+            c.drawString(text_x, cursor_y, title)
+            cursor_y -= 0.4 * cm
+            c.setFillColorRGB(*text_dark)
+            cursor_y = draw_wrapped(
+                body,
+                text_x,
+                cursor_y,
+                text_w,
+                font_size=body_size,
+                leading=body_leading,
+            )
+            cursor_y -= 0.32 * cm
+            if section_index < len(sections) - 1:
+                c.setStrokeColorRGB(*border)
+                c.line(text_x, cursor_y + 0.12 * cm, text_x + text_w, cursor_y + 0.12 * cm)
+                cursor_y -= 0.18 * cm
+
+        c.setFillColorRGB(*green_dark)
+        c.setFont("Helvetica-Bold", 8.7)
+        c.drawString(text_x, cursor_y, "Indicações práticas")
+        cursor_y -= 0.42 * cm
+
+        for item in indications:
+            c.setFillColorRGB(*green)
+            c.circle(text_x + 0.07 * cm, cursor_y + 0.06 * cm, 1.4, fill=1, stroke=0)
+            c.setFillColorRGB(*text_dark)
+            cursor_y = draw_wrapped(
+                item,
+                text_x + 0.28 * cm,
+                cursor_y,
+                text_w - 0.28 * cm,
+                font_size=body_size,
+                leading=body_leading,
+            )
+            cursor_y -= 0.14 * cm
+
+    for index, (vies, media) in enumerate(top_list[:2]):
+        column_x = margin_x + (index * (column_w + column_gap))
+        draw_analysis_column(column_x, index + 1, vies, media)
+
+    draw_footer(2)
 
     c.save()
     buffer.seek(0)
@@ -943,8 +1099,8 @@ def screen_resultado():
         pdf_bytes = make_pdf_bytes(
             nome=st.session_state.nome,
             perfil=perfil,
-            score_api=score_api,
             radar_png=radar_png,
+            ranking=ranking,
             top_list=top,
             definicoes=DEFINICOES_VIESES,
             analises_integradas=ANALISES_INTEGRADAS,
