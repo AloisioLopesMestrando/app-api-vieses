@@ -7,11 +7,11 @@ import streamlit as st
 
 from data.perguntas_api import PERGUNTAS_API
 from data.perguntas_vieses import PERGUNTAS_VIESES
-from data.interpretacoes import (
-    ANALISES_INTEGRADAS,
-    DEFINICOES_VIESES,
-    INTERPRETACOES,
-)
+from data import interpretacoes as interpretacoes_data
+
+INTERPRETACOES = interpretacoes_data.INTERPRETACOES
+DEFINICOES_VIESES = getattr(interpretacoes_data, "DEFINICOES_VIESES", {})
+ANALISES_INTEGRADAS = getattr(interpretacoes_data, "ANALISES_INTEGRADAS", {})
 
 from utils.calculos import (
     classificar_perfil,
