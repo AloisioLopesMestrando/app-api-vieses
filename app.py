@@ -852,7 +852,7 @@ def screen_resultado():
         )
 
     with colB:
-        if st.button("👔 Recomendações para o Profissional", use_container_width=True):
+        if st.button("👔 Leitura para o Assessor", use_container_width=True):
             st.session_state.step = "profissional"
             st.rerun()
 
