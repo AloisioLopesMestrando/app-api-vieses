@@ -346,35 +346,32 @@ def render_ranking_vieses(ranking):
     itens = []
     for posicao, (vies, media) in enumerate(ranking, start=1):
         largura = min(max((media / 5) * 100, 0), 100)
+        media_formatada = f"{media:.2f}".replace(".", ",")
         itens.append(
-            f"""
-            <div class="ranking-item">
-              <div class="ranking-head">
-                <span class="ranking-name">{posicao}. {vies}</span>
-                <span class="ranking-score">{media:.2f}/5</span>
-              </div>
-              <div class="ranking-track">
-                <div class="ranking-fill" style="width:{largura:.1f}%;"></div>
-              </div>
-              <div class="ranking-intensity">{classificar_intensidade(media)}</div>
-            </div>
-            """
+            '<div class="ranking-item">'
+            '<div class="ranking-head">'
+            f'<span class="ranking-name">{posicao}. {vies}</span>'
+            f'<span class="ranking-score">{media_formatada}/5</span>'
+            '</div>'
+            '<div class="ranking-track">'
+            f'<div class="ranking-fill" style="width:{largura:.1f}%;"></div>'
+            '</div>'
+            f'<div class="ranking-intensity">{classificar_intensidade(media)}</div>'
+            '</div>'
         )
 
-    st.markdown(
-        f"""
-        <div class="ranking-list">
-          {''.join(itens)}
-        </div>
-        <div class="intensity-legend">
-          <strong>Como interpretar:</strong><br>
-          Baixa presença: 1,00 a 2,49 &nbsp;|&nbsp;
-          Presença moderada: 2,50 a 3,49 &nbsp;|&nbsp;
-          Alta presença: 3,50 a 5,00
-        </div>
-        """,
-        unsafe_allow_html=True,
+    ranking_html = (
+        '<div class="ranking-list">'
+        f'{"".join(itens)}'
+        '</div>'
+        '<div class="intensity-legend">'
+        '<strong>Como interpretar:</strong><br>'
+        'Baixa presença: 1,00 a 2,49 &nbsp;|&nbsp; '
+        'Presença moderada: 2,50 a 3,49 &nbsp;|&nbsp; '
+        'Alta presença: 3,50 a 5,00'
+        '</div>'
     )
+    st.markdown(ranking_html, unsafe_allow_html=True)
 
 
 # -----------------------------
