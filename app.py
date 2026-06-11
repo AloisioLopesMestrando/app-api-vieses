@@ -120,6 +120,83 @@ def inject_css(watermark: bool = False) -> None:
             border-radius: 18px;
             padding: 1.05rem 1.1rem;
         }}
+        .behavior-summary {{
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.75rem;
+            margin: 1rem 0 0;
+        }}
+        .behavior-summary-item {{
+            border-left: 3px solid #2E7D32;
+            padding: 0.2rem 0.75rem;
+            min-width: 0;
+        }}
+        .behavior-summary-label {{
+            color: #6B7280;
+            font-size: 0.82rem;
+            margin-bottom: 0.2rem;
+        }}
+        .behavior-summary-value {{
+            color: #111827;
+            font-size: 1rem;
+            font-weight: 700;
+            overflow-wrap: anywhere;
+        }}
+        .ranking-list {{
+            display: flex;
+            flex-direction: column;
+            gap: 0.9rem;
+            padding-top: 0.25rem;
+        }}
+        .ranking-head {{
+            display: flex;
+            justify-content: space-between;
+            gap: 0.75rem;
+            align-items: baseline;
+            margin-bottom: 0.35rem;
+        }}
+        .ranking-name {{
+            color: #111827;
+            font-size: 0.95rem;
+            font-weight: 700;
+        }}
+        .ranking-score {{
+            color: #1B5E20;
+            font-size: 0.9rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }}
+        .ranking-track {{
+            width: 100%;
+            height: 9px;
+            background: #E5E7EB;
+            border-radius: 4px;
+            overflow: hidden;
+        }}
+        .ranking-fill {{
+            height: 100%;
+            background: #2E7D32;
+            border-radius: 4px;
+        }}
+        .ranking-intensity {{
+            color: #6B7280;
+            font-size: 0.82rem;
+            margin-top: 0.3rem;
+        }}
+        .intensity-legend {{
+            color: #4B5563;
+            font-size: 0.86rem;
+            line-height: 1.6;
+            border-top: 1px solid #E5E7EB;
+            margin-top: 1.1rem;
+            padding-top: 0.8rem;
+        }}
+        .attention-block {{
+            background: #F7FBF7;
+            border-left: 4px solid #2E7D32;
+            padding: 0.85rem 1rem;
+            margin-top: 1rem;
+        }}
         .muted {{
             color: rgba(0,0,0,0.62);
         }}
@@ -172,6 +249,12 @@ def inject_css(watermark: bool = False) -> None:
      .hero-title {{ color: #111827; }}
      .hero-sub {{ color: rgba(17, 24, 39, 0.75); }}
 
+     @media (max-width: 640px) {{
+         .behavior-summary {{
+             grid-template-columns: 1fr;
+             gap: 0.8rem;
+         }}
+     }}
 
 
         {watermark_css}
@@ -249,6 +332,49 @@ def cache_results_if_needed():
         st.session_state.score_api = score_api
         st.session_state.medias_vieses = medias
         st.session_state.top_vieses = top
+
+
+def classificar_intensidade(media: float) -> str:
+    if media < 2.50:
+        return "Baixa presença"
+    if media < 3.50:
+        return "Presença moderada"
+    return "Alta presença"
+
+
+def render_ranking_vieses(ranking):
+    itens = []
+    for posicao, (vies, media) in enumerate(ranking, start=1):
+        largura = min(max((media / 5) * 100, 0), 100)
+        itens.append(
+            f"""
+            <div class="ranking-item">
+              <div class="ranking-head">
+                <span class="ranking-name">{posicao}. {vies}</span>
+                <span class="ranking-score">{media:.2f}/5</span>
+              </div>
+              <div class="ranking-track">
+                <div class="ranking-fill" style="width:{largura:.1f}%;"></div>
+              </div>
+              <div class="ranking-intensity">{classificar_intensidade(media)}</div>
+            </div>
+            """
+        )
+
+    st.markdown(
+        f"""
+        <div class="ranking-list">
+          {''.join(itens)}
+        </div>
+        <div class="intensity-legend">
+          <strong>Como interpretar:</strong><br>
+          Baixa presença: 1,00 a 2,49 &nbsp;|&nbsp;
+          Presença moderada: 2,50 a 3,49 &nbsp;|&nbsp;
+          Alta presença: 3,50 a 5,00
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
 
 # -----------------------------
@@ -630,6 +756,9 @@ def screen_resultado():
     score_api = st.session_state.score_api
     medias = st.session_state.medias_vieses
     top = st.session_state.top_vieses
+    ranking = sorted(medias.items(), key=lambda item: item[1], reverse=True)
+    principal = ranking[0][0]
+    segundo = ranking[1][0]
 
     st.markdown(
         f"""
@@ -652,9 +781,55 @@ def screen_resultado():
 
     st.write("")
 
+    st.markdown(
+        f"""
+        <div class="card">
+          <h2 style="margin:0;">Mapa comportamental do investidor</h2>
+          <p class="muted" style="margin:0.45rem 0 0;">
+            Escala de 1 a 5: quanto maior a média, maior a presença do viés no comportamento do investidor.
+          </p>
+          <div class="behavior-summary">
+            <div class="behavior-summary-item">
+              <div class="behavior-summary-label">Perfil API</div>
+              <div class="behavior-summary-value">{perfil}</div>
+            </div>
+            <div class="behavior-summary-item">
+              <div class="behavior-summary-label">Viés predominante</div>
+              <div class="behavior-summary-value">{principal}</div>
+            </div>
+            <div class="behavior-summary-item">
+              <div class="behavior-summary-label">Segundo ponto de atenção</div>
+              <div class="behavior-summary-value">{segundo}</div>
+            </div>
+          </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+    st.write("")
+
     fig = grafico_radar(medias)
-    radar_png = fig_to_png_bytes(fig)   # <-- gera o PNG antes de limpar a figura
-    st.pyplot(fig, clear_figure=True)
+    radar_png = fig_to_png_bytes(fig)
+
+    col_radar, col_ranking = st.columns([1, 1.15], gap="large")
+    with col_radar:
+        st.markdown("#### Visão geral")
+        st.image(radar_png, use_container_width=True)
+
+    with col_ranking:
+        st.markdown("#### Ranking dos vieses")
+        render_ranking_vieses(ranking)
+
+    st.markdown(
+        f"""
+        <div class="attention-block">
+          <strong>Principais pontos de atenção</strong><br>
+          {principal} foi o viés com maior média no resultado.<br>
+          {segundo} foi o segundo viés mais relevante.
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
 
     # ---- Buttons row: PDF + Professional page
