@@ -151,6 +151,27 @@ INTERPRETACOES = {
 }
 
 
+TEXTOS_PERFIS = {
+    "Conservador": (
+        "O investidor conservador costuma priorizar segurança, previsibilidade e preservação do patrimônio. "
+        "Em geral, prefere investimentos com menor risco, maior estabilidade e liquidez compatível com seus "
+        "objetivos. Esse perfil tende a aceitar retornos menores em troca de mais tranquilidade e menor exposição "
+        "a oscilações."
+    ),
+    "Moderado": (
+        "O investidor moderado busca equilíbrio entre segurança e rentabilidade. Em geral, aceita algum nível de "
+        "risco para tentar obter retornos melhores, desde que a estratégia esteja alinhada ao seu prazo, objetivo "
+        "e capacidade de lidar com oscilações. Esse perfil costuma combinar investimentos mais seguros com "
+        "alternativas de maior potencial de retorno."
+    ),
+    "Arrojado": (
+        "O investidor arrojado tende a aceitar maior exposição a risco e oscilações em busca de retornos mais "
+        "elevados no médio e longo prazo. Esse perfil costuma ter maior tolerância à volatilidade, mas ainda "
+        "precisa de planejamento, diversificação e acompanhamento para evitar decisões concentradas ou impulsivas."
+    ),
+}
+
+
 DEFINICOES_VIESES = {
     "Aversão à Perda": (
         "A aversão à perda é a tendência de sentir o impacto de uma perda com mais intensidade do que o prazer "

@@ -10,6 +10,7 @@ from data.perguntas_vieses import PERGUNTAS_VIESES
 from data import interpretacoes as interpretacoes_data
 
 INTERPRETACOES = interpretacoes_data.INTERPRETACOES
+TEXTOS_PERFIS = getattr(interpretacoes_data, "TEXTOS_PERFIS", {})
 DEFINICOES_VIESES = getattr(interpretacoes_data, "DEFINICOES_VIESES", {})
 ANALISES_INTEGRADAS = getattr(interpretacoes_data, "ANALISES_INTEGRADAS", {})
 LEITURAS_ASSESSOR = getattr(interpretacoes_data, "LEITURAS_ASSESSOR", {})
@@ -703,47 +704,93 @@ def make_pdf_bytes(
             y -= leading
         return y
 
-    def draw_summary_item(x, y, w, label, value):
-        c.setFillColorRGB(0.97, 0.99, 0.97)
-        c.setStrokeColorRGB(*border)
-        c.roundRect(x, y, w, 1.65 * cm, 7, fill=1, stroke=1)
-        c.setFillColorRGB(*muted)
-        c.setFont("Helvetica", 7.5)
-        c.drawString(x + 0.35 * cm, y + 1.08 * cm, label.upper())
-        c.setFillColorRGB(*green_dark)
-        c.setFont("Helvetica-Bold", 10)
-        value_lines = wrap_lines(value, w - 0.7 * cm, "Helvetica-Bold", 10)
-        c.drawString(x + 0.35 * cm, y + 0.53 * cm, value_lines[0] if value_lines else "")
-
     # Página 1: resumo visual
-    draw_header("Meu Perfil de Investidor", "Mapa comportamental e leitura dos principais vieses")
+    draw_header("Meu Perfil de Investidor", "Perfil de risco e mapa comportamental")
     c.setFillColorRGB(*text_dark)
     c.setFont("Helvetica", 9)
     c.drawString(margin_x, H - 3.0 * cm, f"Respondente: {nome}")
     c.drawRightString(W - margin_x, H - 3.0 * cm, f"Data: {datetime.now().strftime('%d/%m/%Y')}")
 
-    summary_y = H - 5.15 * cm
-    gap = 0.35 * cm
-    item_w = (content_w - (2 * gap)) / 3
-    principal = top_list[0][0] if top_list else "-"
-    segundo = top_list[1][0] if len(top_list) > 1 else "-"
-    draw_summary_item(margin_x, summary_y, item_w, "Perfil API", perfil)
-    draw_summary_item(margin_x + item_w + gap, summary_y, item_w, "Viés predominante", principal)
-    draw_summary_item(margin_x + (2 * (item_w + gap)), summary_y, item_w, "Segundo ponto", segundo)
+    profile_intro = (
+        "O perfil de investidor indica a forma como você tende a lidar com risco, retorno, prazo e segurança ao "
+        "tomar decisões financeiras. Ele ajuda a entender quais tipos de investimento podem estar mais alinhados "
+        "aos seus objetivos e à sua tolerância a oscilações."
+    )
+    profile_text = TEXTOS_PERFIS.get(perfil, "")
+    profile_top = H - 3.45 * cm
+    profile_h = 3.75 * cm
+    profile_bottom = profile_top - profile_h
+
+    c.setFillColorRGB(0.97, 0.99, 0.97)
+    c.setStrokeColorRGB(*border)
+    c.roundRect(margin_x, profile_bottom, content_w, profile_h, 8, fill=1, stroke=1)
+    c.setFillColorRGB(*green)
+    c.roundRect(margin_x, profile_bottom, 0.16 * cm, profile_h, 5, fill=1, stroke=0)
+
+    profile_x = margin_x + 0.5 * cm
+    profile_w = content_w - 1.0 * cm
+    profile_y = profile_top - 0.65 * cm
+    c.setFillColorRGB(*green_dark)
+    c.setFont("Helvetica-Bold", 12)
+    c.drawString(profile_x, profile_y, f"Perfil identificado: {perfil}")
+    profile_y -= 0.58 * cm
+    c.setFillColorRGB(*text_dark)
+    profile_y = draw_wrapped(
+        profile_intro,
+        profile_x,
+        profile_y,
+        profile_w,
+        font_size=8.2,
+        leading=10.4,
+    )
+    profile_y -= 0.18 * cm
+    c.setFillColorRGB(*text_dark)
+    draw_wrapped(
+        profile_text,
+        profile_x,
+        profile_y,
+        profile_w,
+        font_size=8.2,
+        leading=10.4,
+    )
 
     c.setFillColorRGB(*text_dark)
     c.setFont("Helvetica-Bold", 14)
-    c.drawString(margin_x, H - 6.2 * cm, "Mapa comportamental do investidor")
-    c.setFillColorRGB(*muted)
-    c.setFont("Helvetica", 8.5)
-    c.drawString(
-        margin_x,
-        H - 6.68 * cm,
-        "Escala de 1 a 5: quanto maior a média, maior a presença do viés.",
-    )
+    map_title_y = profile_bottom - 0.68 * cm
+    c.drawString(margin_x, map_title_y, "Mapa comportamental do investidor")
 
-    visual_top = H - 7.25 * cm
-    visual_bottom = 4.1 * cm
+    behavior_paragraphs = [
+        (
+            "Além do perfil de risco, este questionário também identifica possíveis vieses comportamentais. "
+            "Vieses são tendências de comportamento que podem influenciar a forma como uma pessoa toma decisões "
+            "financeiras, muitas vezes sem perceber."
+        ),
+        (
+            "Eles não indicam erro, problema ou incapacidade. Servem como pontos de atenção para que o investidor "
+            "tome decisões de forma mais consciente, avaliando melhor risco, prazo, liquidez, rentabilidade e seus "
+            "próprios objetivos."
+        ),
+        (
+            "Os gráficos abaixo apresentam os vieses avaliados no questionário. Quanto maior a média, maior a "
+            "presença daquele comportamento nas respostas. Os dois vieses com maior destaque serão analisados com "
+            "mais detalhe nas próximas seções."
+        ),
+    ]
+    behavior_y = map_title_y - 0.55 * cm
+    c.setFillColorRGB(*text_dark)
+    for paragraph in behavior_paragraphs:
+        behavior_y = draw_wrapped(
+            paragraph,
+            margin_x,
+            behavior_y,
+            content_w,
+            font_size=8.0,
+            leading=10.2,
+        )
+        behavior_y -= 0.16 * cm
+
+    visual_top = behavior_y - 0.18 * cm
+    visual_bottom = 2.05 * cm
     visual_h = visual_top - visual_bottom
     radar_x = margin_x
     radar_w = 9.1 * cm
@@ -765,9 +812,9 @@ def make_pdf_bytes(
         c.drawImage(
             img,
             radar_x + 0.35 * cm,
-            visual_bottom + 1.1 * cm,
+            visual_bottom + 1.0 * cm,
             width=radar_w - 0.7 * cm,
-            height=visual_h - 2.0 * cm,
+            height=visual_h - 1.85 * cm,
             preserveAspectRatio=True,
             anchor="c",
             mask="auto",
@@ -781,44 +828,50 @@ def make_pdf_bytes(
             "Não foi possível renderizar o gráfico.",
         )
 
-    rank_y = visual_top - 1.55 * cm
+    rank_y = visual_top - 1.35 * cm
     bar_w = ranking_w - 0.9 * cm
+    rank_step = max(2.2 * cm, min(3.25 * cm, (visual_h - 3.0 * cm) / 4))
     for posicao, (vies, media) in enumerate(ranking, start=1):
         media_formatada = f"{media:.2f}".replace(".", ",")
         c.setFillColorRGB(*text_dark)
-        c.setFont("Helvetica-Bold", 8.6)
+        c.setFont("Helvetica-Bold", 8.4)
         c.drawString(ranking_x + 0.45 * cm, rank_y, f"{posicao}. {vies}")
         c.setFillColorRGB(*green_dark)
-        c.setFont("Helvetica-Bold", 8.6)
+        c.setFont("Helvetica-Bold", 8.4)
         c.drawRightString(ranking_x + ranking_w - 0.45 * cm, rank_y, f"{media_formatada}/5")
 
-        track_y = rank_y - 0.4 * cm
+        track_y = rank_y - 0.38 * cm
         c.setFillColorRGB(0.90, 0.92, 0.90)
-        c.roundRect(ranking_x + 0.45 * cm, track_y, bar_w, 0.22 * cm, 3, fill=1, stroke=0)
+        c.roundRect(ranking_x + 0.45 * cm, track_y, bar_w, 0.2 * cm, 3, fill=1, stroke=0)
         c.setFillColorRGB(*green)
         c.roundRect(
             ranking_x + 0.45 * cm,
             track_y,
             bar_w * min(max(media / 5, 0), 1),
-            0.22 * cm,
+            0.2 * cm,
             3,
             fill=1,
             stroke=0,
         )
         c.setFillColorRGB(*muted)
-        c.setFont("Helvetica", 7.7)
+        c.setFont("Helvetica", 7.4)
         c.drawString(
             ranking_x + 0.45 * cm,
-            track_y - 0.38 * cm,
+            track_y - 0.34 * cm,
             classificar_intensidade(media),
         )
-        rank_y -= 2.15 * cm
+        rank_y -= rank_step
 
-    legend_y = visual_bottom + 0.55 * cm
+    legend_y = visual_bottom + 0.42 * cm
     c.setStrokeColorRGB(*border)
-    c.line(ranking_x + 0.45 * cm, legend_y + 0.55 * cm, ranking_x + ranking_w - 0.45 * cm, legend_y + 0.55 * cm)
+    c.line(
+        ranking_x + 0.45 * cm,
+        legend_y + 0.48 * cm,
+        ranking_x + ranking_w - 0.45 * cm,
+        legend_y + 0.48 * cm,
+    )
     c.setFillColorRGB(*muted)
-    c.setFont("Helvetica", 7.2)
+    c.setFont("Helvetica", 6.9)
     c.drawString(ranking_x + 0.45 * cm, legend_y, "Baixa: 1,00–2,49")
     c.drawCentredString(ranking_x + (ranking_w / 2), legend_y, "Moderada: 2,50–3,49")
     c.drawRightString(ranking_x + ranking_w - 0.45 * cm, legend_y, "Alta: 3,50–5,00")
