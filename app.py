@@ -89,22 +89,41 @@ def inject_css(watermark: bool = False) -> None:
         footer {{visibility: hidden;}}
         header {{visibility: hidden;}}
 
-        div.stButton > button {{
-            border-radius: 14px;
+        div.stButton > button,
+        div.stDownloadButton > button {{
+            width: 100%;
+            min-height: 3.1rem;
+            border-radius: 8px;
             padding: 0.7rem 1.05rem;
             border: 1px solid rgba(46,125,50,0.25);
             background: linear-gradient(180deg, rgba(46,125,50,1), rgba(27,94,32,1));
             color: #fff;
             font-weight: 700;
+            line-height: 1.2;
             box-shadow: 0 8px 18px rgba(27,94,32,0.18);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
         }}
-        div.stButton > button:hover {{
+        div.stButton > button:hover,
+        div.stDownloadButton > button:hover {{
             transform: translateY(-1px);
             box-shadow: 0 10px 22px rgba(27,94,32,0.22);
+            color: #fff;
+            border-color: rgba(27,94,32,0.45);
         }}
         div.stButton > button:disabled {{
             opacity: 0.55;
             cursor: not-allowed;
+        }}
+        .result-actions-title {{
+            color: #1F2937;
+            font-size: 1.05rem;
+            font-weight: 800;
+            margin-bottom: 0.15rem;
+        }}
+        .result-actions-subtitle {{
+            color: #667085;
+            font-size: 0.86rem;
+            margin-bottom: 0.65rem;
         }}
 
         .stTextInput input {{
@@ -1235,49 +1254,6 @@ def screen_resultado():
         """,
         unsafe_allow_html=True,
     )
-
-
-    # ---- Buttons row: PDF + Professional page
-    st.write("")
-    colA, colB, colC = st.columns([1.1, 1.6, 1.3])
-
-    with colA:
-        # generate pdf bytes on demand (fast)
-        pdf_bytes = make_pdf_bytes(
-            nome=st.session_state.nome,
-            perfil=perfil,
-            radar_png=radar_png,
-            ranking=ranking,
-            top_list=top,
-            definicoes=DEFINICOES_VIESES,
-            analises_integradas=ANALISES_INTEGRADAS,
-        )
-        st.download_button(
-            "🖨️ Gerar PDF",
-            data=pdf_bytes,
-            file_name=f"resultado_{st.session_state.nome.replace(' ', '_')}.pdf",
-            mime="application/pdf",
-            use_container_width=True,
-        )
-
-    with colB:
-        if st.button("👔 Leitura para o Assessor", use_container_width=True):
-            st.session_state.step = "profissional"
-            st.rerun()
-
-    with colC:
-        if st.button("🔁 Refazer", use_container_width=True):
-            st.session_state.step = "home"
-            st.session_state.api_idx = 0
-            st.session_state.vies_idx = 0
-            st.session_state.respostas_api = []
-            st.session_state.respostas_vieses = {}
-            st.session_state.perfil_api = None
-            st.session_state.score_api = None
-            st.session_state.medias_vieses = None
-            st.session_state.top_vieses = None
-            st.rerun()
-
     st.write("")
     st.markdown("## 🧠 Sugestões integradas ao perfil")
     st.caption("Leitura dos dois vieses mais predominantes em conjunto com o perfil de investidor.")
@@ -1286,6 +1262,56 @@ def screen_resultado():
         render_analise_integrada(perfil, vies, media)
 
     st.caption("Obs.: este resultado é educacional e não substitui uma análise profissional completa.")
+
+    st.write("")
+    with st.container(border=True):
+        st.markdown(
+            """
+            <div class="result-actions-title">Ações do resultado</div>
+            <div class="result-actions-subtitle">
+              Baixe o relatório, consulte a leitura profissional ou reinicie o questionário.
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        colA, colB, colC = st.columns(3, gap="medium")
+
+        with colA:
+            pdf_bytes = make_pdf_bytes(
+                nome=st.session_state.nome,
+                perfil=perfil,
+                radar_png=radar_png,
+                ranking=ranking,
+                top_list=top,
+                definicoes=DEFINICOES_VIESES,
+                analises_integradas=ANALISES_INTEGRADAS,
+            )
+            st.download_button(
+                "📄 Gerar PDF",
+                data=pdf_bytes,
+                file_name=f"resultado_{st.session_state.nome.replace(' ', '_')}.pdf",
+                mime="application/pdf",
+                use_container_width=True,
+            )
+
+        with colB:
+            if st.button("👔 Leitura para o Assessor", use_container_width=True):
+                st.session_state.step = "profissional"
+                st.rerun()
+
+        with colC:
+            if st.button("↻ Refazer", use_container_width=True):
+                st.session_state.step = "home"
+                st.session_state.api_idx = 0
+                st.session_state.vies_idx = 0
+                st.session_state.respostas_api = []
+                st.session_state.respostas_vieses = {}
+                st.session_state.perfil_api = None
+                st.session_state.score_api = None
+                st.session_state.medias_vieses = None
+                st.session_state.top_vieses = None
+                st.rerun()
 
 
 def screen_profissional():
