@@ -12,6 +12,7 @@ from data import interpretacoes as interpretacoes_data
 INTERPRETACOES = interpretacoes_data.INTERPRETACOES
 DEFINICOES_VIESES = getattr(interpretacoes_data, "DEFINICOES_VIESES", {})
 ANALISES_INTEGRADAS = getattr(interpretacoes_data, "ANALISES_INTEGRADAS", {})
+LEITURAS_ASSESSOR = getattr(interpretacoes_data, "LEITURAS_ASSESSOR", {})
 
 from utils.calculos import (
     classificar_perfil,
@@ -229,6 +230,90 @@ def inject_css(watermark: bool = False) -> None:
         .integrated-analysis li {{
             margin-bottom: 0.3rem;
         }}
+        .advisor-summary {{
+            background: #F2F8F3;
+            border: 1px solid #CFE1D1;
+            border-left: 5px solid #2E7D32;
+            border-radius: 8px;
+            padding: 1rem 1.1rem;
+            color: #27313D;
+            line-height: 1.55;
+        }}
+        .advisor-card {{
+            background: #FFFFFF;
+            border: 1px solid #DCE7DD;
+            border-top: 4px solid #2E7D32;
+            border-radius: 8px;
+            box-shadow: 0 8px 20px rgba(16, 24, 40, 0.07);
+            margin: 1rem 0 1.25rem;
+            padding: 1.2rem;
+        }}
+        .advisor-card-head {{
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 1rem;
+            border-bottom: 1px solid #E5E7EB;
+            padding-bottom: 0.9rem;
+            margin-bottom: 1rem;
+        }}
+        .advisor-rank {{
+            color: #6B7280;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }}
+        .advisor-title {{
+            color: #1B5E20;
+            font-size: 1.2rem;
+            font-weight: 800;
+            margin-top: 0.2rem;
+        }}
+        .advisor-score {{
+            color: #1B5E20;
+            font-size: 0.86rem;
+            font-weight: 700;
+            white-space: nowrap;
+            text-align: right;
+        }}
+        .advisor-section {{
+            color: #27313D;
+            line-height: 1.55;
+            margin-top: 1rem;
+        }}
+        .advisor-section h4 {{
+            color: #1F2937;
+            font-size: 0.95rem;
+            margin: 0 0 0.45rem;
+        }}
+        .advisor-section p {{
+            margin: 0;
+        }}
+        .advisor-grid {{
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1.2rem;
+            margin-top: 0.25rem;
+        }}
+        .advisor-list {{
+            margin: 0;
+            padding-left: 1.2rem;
+        }}
+        .advisor-list li {{
+            margin-bottom: 0.42rem;
+        }}
+        .advisor-questions li {{
+            color: #1B5E20;
+        }}
+        .advisor-questions li span {{
+            color: #27313D;
+        }}
+        .advisor-care {{
+            background: #F7F8FA;
+            border-left: 4px solid #667085;
+            padding: 0.85rem 1rem;
+            margin-top: 1rem;
+        }}
         .muted {{
             color: rgba(0,0,0,0.62);
         }}
@@ -285,6 +370,17 @@ def inject_css(watermark: bool = False) -> None:
          .behavior-summary {{
              grid-template-columns: 1fr;
              gap: 0.8rem;
+         }}
+         .advisor-card-head {{
+             display: block;
+         }}
+         .advisor-score {{
+             text-align: left;
+             margin-top: 0.55rem;
+         }}
+         .advisor-grid {{
+             grid-template-columns: 1fr;
+             gap: 0.2rem;
          }}
      }}
 
@@ -428,6 +524,57 @@ def render_analise_integrada(perfil: str, vies: str, media: float):
         '</div>'
     )
     st.markdown(bloco_html, unsafe_allow_html=True)
+
+
+def render_leitura_assessor(perfil: str, vies: str, media: float, posicao: int):
+    leitura = LEITURAS_ASSESSOR.get(perfil, {}).get(vies, {})
+    if not leitura:
+        st.warning(f"Leitura para {perfil} + {vies} ainda não disponível.")
+        return
+
+    media_formatada = f"{media:.2f}".replace(".", ",")
+    observar_html = "".join(f"<li>{item}</li>" for item in leitura.get("observar", []))
+    conduzir_html = "".join(f"<li>{item}</li>" for item in leitura.get("conduzir", []))
+    perguntas_html = "".join(
+        f"<li><span>“{pergunta}”</span></li>" for pergunta in leitura.get("perguntas", [])
+    )
+
+    card_html = (
+        '<div class="advisor-card">'
+        '<div class="advisor-card-head">'
+        '<div>'
+        f'<div class="advisor-rank">{posicao}º viés predominante</div>'
+        f'<div class="advisor-title">Perfil {perfil} + {vies}</div>'
+        '</div>'
+        '<div class="advisor-score">'
+        f'{media_formatada}/5<br>{classificar_intensidade(media)}'
+        '</div>'
+        '</div>'
+        '<div class="advisor-section">'
+        '<h4>Leitura para o assessor</h4>'
+        f'<p>{leitura.get("leitura", "")}</p>'
+        '</div>'
+        '<div class="advisor-grid">'
+        '<div class="advisor-section">'
+        '<h4>O que observar</h4>'
+        f'<ul class="advisor-list">{observar_html}</ul>'
+        '</div>'
+        '<div class="advisor-section">'
+        '<h4>Como conduzir melhor</h4>'
+        f'<ul class="advisor-list">{conduzir_html}</ul>'
+        '</div>'
+        '</div>'
+        '<div class="advisor-section">'
+        '<h4>Perguntas úteis</h4>'
+        f'<ul class="advisor-list advisor-questions">{perguntas_html}</ul>'
+        '</div>'
+        '<div class="advisor-section advisor-care">'
+        '<h4>Cuidados de recomendação</h4>'
+        f'<p>{leitura.get("cuidados", "")}</p>'
+        '</div>'
+        '</div>'
+    )
+    st.markdown(card_html, unsafe_allow_html=True)
 
 
 # -----------------------------
@@ -1147,22 +1294,19 @@ def screen_profissional():
     cache_results_if_needed()
 
     perfil = st.session_state.perfil_api
-    score_api = st.session_state.score_api
-    top = st.session_state.top_vieses
+    top = st.session_state.top_vieses[:2]
+    vies_principal = top[0][0]
+    segundo_vies = top[1][0]
 
     st.markdown(
         f"""
         <div class="card">
-          <h1 style="margin-top:0;">Recomendações para o Profissional</h1>
+          <h1 style="margin-top:0;">Leitura para o Assessor</h1>
           <div class="soft-card" style="margin-top:1rem;">
             <p style="margin:0;">
               <strong>Respondente:</strong> {st.session_state.nome}<br>
-              <strong>Perfil (API):</strong> <span style="color:{SICREDI_GREEN_DARK}; font-weight:800;">{perfil}</span>
-              <span class="muted">(pontuação: {score_api})</span>
-            </p>
-            <p class="muted" style="margin-top:0.7rem; margin-bottom:0;">
-              Esta página é voltada ao assessor/profissional que aplicou o questionário, com orientações de condução
-              e recomendações integrando <strong>perfil de risco</strong> e <strong>vieses predominantes</strong>.
+              <strong>Perfil API:</strong>
+              <span style="color:{SICREDI_GREEN_DARK}; font-weight:800;">{perfil}</span>
             </p>
           </div>
         </div>
@@ -1171,38 +1315,20 @@ def screen_profissional():
     )
 
     st.write("")
-    st.markdown("## 🎯 Diretrizes gerais conforme o perfil (API)")
-    st.markdown('<div class="card">', unsafe_allow_html=True)
-    itens = bloco_perfil_profissional(perfil)
-    st.markdown("<ul>" + "".join([f"<li>{i}</li>" for i in itens]) + "</ul>", unsafe_allow_html=True)
-    st.markdown("</div>", unsafe_allow_html=True)
+    st.markdown(
+        f"""
+        <div class="advisor-summary">
+          <strong>Síntese para o assessor:</strong> cliente com perfil {perfil} e predominância de
+          <strong>{vies_principal}</strong> e <strong>{segundo_vies}</strong>. A condução deve equilibrar
+          suitability, educação financeira, alinhamento de expectativas e registro claro da recomendação.
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
     st.write("")
-    st.markdown("## 🧩 Leitura integrada: viés + perfil")
-    for vies, media in top:
-        assessor_html = INTERPRETACOES.get(vies, {}).get("assessor_html", "")
-        extra = INTERPRETACOES.get(vies, {}).get("extras_por_perfil", {}).get(perfil, "")
-
-        assessor_html = assessor_html.replace("```", "").strip()
-        extra = extra.replace("```", "").strip()
-
-
-
-        st.markdown(
-            f"""
-            <div class="card" style="border-left:8px solid {SICREDI_GREEN};">
-              <h3 style="margin-top:0;">{vies} <span class="muted">(média: {media:.2f})</span></h3>
-              <div class="soft-card" style="margin-top:0.85rem;">
-                {assessor_html}
-              </div>
-              <div class="soft-card" style="margin-top:0.85rem;">
-                <strong>Como ajustar a recomendação considerando o perfil {perfil}</strong><br>
-                {extra}
-              </div>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
+    for posicao, (vies, media) in enumerate(top, start=1):
+        render_leitura_assessor(perfil, vies, media, posicao)
 
     st.write("")
     col1, col2 = st.columns([1, 2])
@@ -1211,7 +1337,7 @@ def screen_profissional():
             st.session_state.step = "resultado"
             st.rerun()
     with col2:
-        st.caption("Dica: use esta página como roteiro de atendimento e registre premissas/expectativas.")
+        st.caption("Use esta leitura como apoio ao atendimento e registre premissas, riscos e expectativas alinhadas.")
 
 
 # -----------------------------
