@@ -33,7 +33,9 @@ def calcular_media_vieses(perguntas_vieses, respostas_vieses):
 
         val = int(respostas_vieses[qid])
 
-        if reverse:
+        if vies == "Autocontrole":
+            val = 6 - val  # Mede a presença da falta de autocontrole.
+        elif reverse:
             val = 6 - val  # 1<->5, 2<->4, 3->3
 
         acum[vies] = acum.get(vies, 0) + val
