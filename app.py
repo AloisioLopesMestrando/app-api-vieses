@@ -10,7 +10,30 @@ from data.perguntas_vieses import PERGUNTAS_VIESES
 from data import interpretacoes as interpretacoes_data
 
 INTERPRETACOES = interpretacoes_data.INTERPRETACOES
-TEXTOS_PERFIS = getattr(interpretacoes_data, "TEXTOS_PERFIS", {})
+TEXTOS_PERFIS = getattr(
+    interpretacoes_data,
+    "TEXTOS_PERFIS",
+    {
+        "Conservador": (
+            "O investidor conservador costuma priorizar segurança, previsibilidade e preservação do patrimônio. "
+            "Em geral, prefere investimentos com menor risco, maior estabilidade e liquidez compatível com seus "
+            "objetivos. Esse perfil tende a aceitar retornos menores em troca de mais tranquilidade e menor "
+            "exposição a oscilações."
+        ),
+        "Moderado": (
+            "O investidor moderado busca equilíbrio entre segurança e rentabilidade. Em geral, aceita algum nível "
+            "de risco para tentar obter retornos melhores, desde que a estratégia esteja alinhada ao seu prazo, "
+            "objetivo e capacidade de lidar com oscilações. Esse perfil costuma combinar investimentos mais "
+            "seguros com alternativas de maior potencial de retorno."
+        ),
+        "Arrojado": (
+            "O investidor arrojado tende a aceitar maior exposição a risco e oscilações em busca de retornos mais "
+            "elevados no médio e longo prazo. Esse perfil costuma ter maior tolerância à volatilidade, mas ainda "
+            "precisa de planejamento, diversificação e acompanhamento para evitar decisões concentradas ou "
+            "impulsivas."
+        ),
+    },
+)
 DEFINICOES_VIESES = getattr(interpretacoes_data, "DEFINICOES_VIESES", {})
 ANALISES_INTEGRADAS = getattr(interpretacoes_data, "ANALISES_INTEGRADAS", {})
 LEITURAS_ASSESSOR = getattr(interpretacoes_data, "LEITURAS_ASSESSOR", {})
@@ -717,6 +740,7 @@ def make_pdf_bytes(
         "aos seus objetivos e à sua tolerância a oscilações."
     )
     profile_text = TEXTOS_PERFIS.get(perfil, "")
+    profile_description = f"{profile_intro} {profile_text}".strip()
     profile_top = H - 3.45 * cm
     profile_h = 3.75 * cm
     profile_bottom = profile_top - profile_h
@@ -735,18 +759,8 @@ def make_pdf_bytes(
     c.drawString(profile_x, profile_y, f"Perfil identificado: {perfil}")
     profile_y -= 0.58 * cm
     c.setFillColorRGB(*text_dark)
-    profile_y = draw_wrapped(
-        profile_intro,
-        profile_x,
-        profile_y,
-        profile_w,
-        font_size=8.2,
-        leading=10.4,
-    )
-    profile_y -= 0.18 * cm
-    c.setFillColorRGB(*text_dark)
     draw_wrapped(
-        profile_text,
+        profile_description,
         profile_x,
         profile_y,
         profile_w,
