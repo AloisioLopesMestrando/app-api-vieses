@@ -2,20 +2,21 @@ INTERPRETACOES = {
     "Excesso de Confiança": {
         "respondente_html": """
         <p style="margin:0;">
-          Você tende a confiar bastante na sua capacidade de decidir e prever resultados. Isso pode levar a
-          <strong>concentração</strong>, <strong>operações frequentes</strong> e <strong>subestimação de riscos</strong>.
+          Você pode confiar bastante nas próprias decisões de investimento. Isso é positivo quando vem junto com
+          planejamento, mas pode virar um ponto de atenção quando faz você investir demais em uma única opção,
+          trocar de investimento muitas vezes ou deixar de olhar os riscos com calma.
         </p>
-        <p style="margin-top:0.65rem; margin-bottom:0;"><strong>Como reduzir o impacto</strong></p>
+        <p style="margin-top:0.65rem; margin-bottom:0;"><strong>Como cuidar melhor disso</strong></p>
         <ul style="margin-top:0.35rem;">
-          <li>Defina regras simples (ex.: limite de % por produto/emitente).</li>
-          <li>Prefira <strong>diversificação</strong> e aportes regulares.</li>
-          <li>Use um checklist antes de aplicar (prazo, liquidez, risco e objetivo).</li>
+          <li>Evite colocar grande parte do dinheiro em um único produto ou ideia.</li>
+          <li>Monte uma carteira diversificada, com diferentes tipos de investimento.</li>
+          <li>Antes de investir, confira: objetivo, prazo, risco e se você pode precisar desse dinheiro.</li>
         </ul>
         """,
         "respondente_txt": (
-            "Você tende a confiar bastante na sua capacidade de decidir e prever resultados. "
-            "Como reduzir: defina limites de concentração, prefira diversificação/aportes regulares e use checklist "
-            "(prazo, liquidez, risco, objetivo)."
+            "Você pode confiar bastante nas próprias decisões de investimento. Isso ajuda quando existe planejamento, "
+            "mas pode levar a concentrar dinheiro demais em uma opção, trocar de investimento muitas vezes ou ignorar "
+            "riscos. Para cuidar melhor disso, diversifique e confira objetivo, prazo, risco e liquidez antes de aplicar."
         ),
         "assessor_html": """
         <p style="margin:0;">
@@ -43,19 +44,21 @@ INTERPRETACOES = {
     "Ancoragem": {
         "respondente_html": """
         <p style="margin:0;">
-          Você tende a usar retornos passados ou experiências anteriores como referência para decidir hoje.
-          Isso pode manter expectativas <strong>desalinhadas</strong> quando o cenário muda.
+          Você pode usar experiências antigas como referência para decidir hoje, como uma taxa que já recebeu,
+          um investimento que deu certo ou uma lembrança de quando o mercado estava diferente. O ponto de atenção
+          é que o cenário muda, e nem sempre o que funcionou antes continua sendo a melhor escolha agora.
         </p>
-        <p style="margin-top:0.65rem; margin-bottom:0;"><strong>Como reduzir o impacto</strong></p>
+        <p style="margin-top:0.65rem; margin-bottom:0;"><strong>Como cuidar melhor disso</strong></p>
         <ul style="margin-top:0.35rem;">
-          <li>Reavalie o cenário (juros, inflação, crédito e prazo) periodicamente.</li>
-          <li>Compare com referências atuais (benchmarks), não apenas com o passado.</li>
-          <li>Decida por objetivo e prazo, não por "retorno anterior".</li>
+          <li>Compare as opções com o cenário atual, não só com o passado.</li>
+          <li>Pergunte se aquele investimento ainda combina com seu objetivo e prazo.</li>
+          <li>Lembre que retorno passado não garante o mesmo resultado no futuro.</li>
         </ul>
         """,
         "respondente_txt": (
-            "Você tende a usar retornos passados como referência. Como reduzir: reavaliar cenário, comparar com benchmarks "
-            "atuais e decidir por objetivo/prazo, não por retorno anterior."
+            "Você pode usar experiências antigas como referência para decidir hoje. Isso pode atrapalhar quando o cenário "
+            "mudou. Compare as opções com a realidade atual, veja se combinam com seu objetivo e prazo, e lembre que retorno "
+            "passado não garante resultado futuro."
         ),
         "assessor_html": """
         <p style="margin:0;">
@@ -81,19 +84,21 @@ INTERPRETACOES = {
     "Aversão à Perda": {
         "respondente_html": """
         <p style="margin:0;">
-          Você tende a sentir perdas com mais intensidade do que ganhos equivalentes. Isso pode gerar
-          <strong>adiamento de decisões</strong> ou preferência por alternativas muito conservadoras.
+          Você pode sentir o desconforto de uma perda com mais força do que a satisfação de um ganho. Por isso,
+          pode evitar decisões importantes ou escolher sempre a opção mais segura, mesmo quando parte do dinheiro
+          poderia buscar um retorno melhor dentro do seu prazo.
         </p>
-        <p style="margin-top:0.65rem; margin-bottom:0;"><strong>Como reduzir o impacto</strong></p>
+        <p style="margin-top:0.65rem; margin-bottom:0;"><strong>Como cuidar melhor disso</strong></p>
         <ul style="margin-top:0.35rem;">
-          <li>Separe reserva de emergência do capital de objetivos.</li>
-          <li>Use estratégia gradual (aportes, prazos escalonados).</li>
-          <li>Foque em metas e prazo, não em oscilações de curto prazo.</li>
+          <li>Separe a reserva de emergência dos investimentos para objetivos maiores.</li>
+          <li>Invista aos poucos, em etapas, para ganhar segurança.</li>
+          <li>Olhe para o objetivo e o prazo, não apenas para pequenas oscilações do dia a dia.</li>
         </ul>
         """,
         "respondente_txt": (
-            "Você sente perdas com mais intensidade. Como reduzir: separar reserva de emergência, usar aportes/prazos "
-            "escalonados e focar em metas e horizonte, não no curto prazo."
+            "Você pode sentir perdas com bastante intensidade. Isso pode fazer você adiar decisões ou escolher sempre a "
+            "opção mais segura. Separe a reserva de emergência, invista aos poucos e olhe para o objetivo e o prazo, não "
+            "só para oscilações de curto prazo."
         ),
         "assessor_html": """
         <p style="margin:0;">
@@ -119,17 +124,20 @@ INTERPRETACOES = {
     "Autocontrole": {
         "respondente_html": """
         <p style="margin:0;">
-          Autocontrole está ligado à disciplina e capacidade de seguir metas. Quanto maior, melhor para consistência.
+          Autocontrole tem relação com disciplina financeira: conseguir guardar dinheiro, investir com frequência
+          e seguir um plano mesmo quando aparecem vontades de gastar ou mudar tudo no meio do caminho.
         </p>
-        <p style="margin-top:0.65rem; margin-bottom:0;"><strong>Como potencializar</strong></p>
+        <p style="margin-top:0.65rem; margin-bottom:0;"><strong>Como fortalecer esse comportamento</strong></p>
         <ul style="margin-top:0.35rem;">
-          <li>Automatize aportes (débito agendado).</li>
-          <li>Defina metas por objetivo (viagem, casa, aposentadoria).</li>
-          <li>Separe orçamento: consumo, reserva e investimentos.</li>
+          <li>Programe investimentos automáticos, se isso fizer sentido para você.</li>
+          <li>Dê um nome para cada objetivo: reserva, viagem, casa, aposentadoria ou outro plano.</li>
+          <li>Separe o dinheiro do mês em consumo, reserva e investimentos.</li>
         </ul>
         """,
         "respondente_txt": (
-            "Autocontrole ajuda na disciplina. Potencialize automatizando aportes, metas por objetivo e orçamento separado."
+            "Autocontrole tem relação com disciplina financeira: guardar dinheiro, investir com frequência e seguir um plano. "
+            "Para fortalecer isso, programe investimentos, defina objetivos claros e separe o dinheiro entre consumo, reserva "
+            "e investimentos."
         ),
         "assessor_html": """
         <p style="margin:0;">
@@ -153,48 +161,44 @@ INTERPRETACOES = {
 
 TEXTOS_PERFIS = {
     "Conservador": (
-        "O investidor conservador costuma priorizar segurança, previsibilidade e preservação do patrimônio. "
-        "Em geral, prefere investimentos com menor risco, maior estabilidade e liquidez compatível com seus "
-        "objetivos. Esse perfil tende a aceitar retornos menores em troca de mais tranquilidade e menor exposição "
-        "a oscilações."
+        "O perfil conservador costuma dar mais valor à segurança e à previsibilidade. Em geral, prefere "
+        "investimentos com menor risco e que permitam entender melhor o que pode acontecer com o dinheiro. "
+        "Esse perfil aceita ganhar um pouco menos em troca de mais tranquilidade e menor chance de grandes "
+        "oscilações."
     ),
     "Moderado": (
-        "O investidor moderado busca equilíbrio entre segurança e rentabilidade. Em geral, aceita algum nível de "
-        "risco para tentar obter retornos melhores, desde que a estratégia esteja alinhada ao seu prazo, objetivo "
-        "e capacidade de lidar com oscilações. Esse perfil costuma combinar investimentos mais seguros com "
-        "alternativas de maior potencial de retorno."
+        "O perfil moderado busca equilíbrio: quer segurança, mas também aceita algum risco para tentar melhorar "
+        "os resultados. Normalmente combina investimentos mais estáveis com outros que podem oscilar um pouco "
+        "mais, desde que isso faça sentido para o objetivo, o prazo e o nível de conforto da pessoa."
     ),
     "Arrojado": (
-        "O investidor arrojado tende a aceitar maior exposição a risco e oscilações em busca de retornos mais "
-        "elevados no médio e longo prazo. Esse perfil costuma ter maior tolerância à volatilidade, mas ainda "
-        "precisa de planejamento, diversificação e acompanhamento para evitar decisões concentradas ou impulsivas."
+        "O perfil arrojado aceita correr mais risco e lidar com mais oscilações para buscar retornos maiores, "
+        "principalmente no médio e longo prazo. Mesmo assim, continua precisando de planejamento, diversificação "
+        "e acompanhamento para evitar decisões por impulso ou concentração excessiva em poucas escolhas."
     ),
 }
 
 
 DEFINICOES_VIESES = {
     "Aversão à Perda": (
-        "A aversão à perda é a tendência de sentir o impacto de uma perda com mais intensidade do que o prazer "
-        "de um ganho equivalente. No contexto dos investimentos, esse viés pode fazer com que o investidor evite "
-        "riscos, resgate aplicações antes do prazo ou abandone uma estratégia adequada por desconforto com "
-        "oscilações temporárias."
+        "A aversão à perda acontece quando a pessoa sente uma perda com muito mais força do que sente um ganho "
+        "parecido. Nos investimentos, isso pode levar a evitar riscos demais, resgatar antes da hora ou abandonar "
+        "uma estratégia boa só porque houve uma queda temporária."
     ),
     "Ancoragem": (
-        "A ancoragem ocorre quando o investidor se prende a uma informação de referência, como uma taxa antiga, "
-        "um retorno passado, o preço de entrada de um investimento ou uma experiência anterior. Esse viés pode "
-        "dificultar a tomada de decisão com base no cenário atual, levando o investidor a comparar novas "
-        "oportunidades com referências que talvez já não façam sentido."
+        "A ancoragem acontece quando a pessoa fica presa a uma referência antiga, como uma taxa que já recebeu, "
+        "um retorno passado, o preço em que comprou algo ou uma experiência anterior. Isso pode atrapalhar a "
+        "decisão, porque o mercado muda e aquela comparação antiga pode não fazer mais sentido."
     ),
     "Excesso de Confiança": (
-        "O excesso de confiança é a tendência de superestimar a própria capacidade de prever resultados, escolher "
-        "investimentos ou identificar o melhor momento para investir. Esse viés pode levar a decisões com maior "
-        "concentração, aumento de risco, giro excessivo da carteira ou menor atenção à diversificação."
+        "O excesso de confiança acontece quando a pessoa acredita demais na própria capacidade de prever o que "
+        "vai acontecer ou de escolher sempre a melhor opção. Isso pode levar a colocar dinheiro demais em uma "
+        "única ideia, assumir mais risco do que percebe ou trocar de investimento com frequência."
     ),
     "Autocontrole": (
-        "O viés de autocontrole está relacionado à dificuldade de manter disciplina financeira ao longo do tempo. "
-        "Pode aparecer na falta de regularidade nos aportes, em resgates antecipados, na dificuldade de separar "
-        "consumo de investimento ou na mudança frequente de estratégia antes que o plano tenha tempo de gerar "
-        "resultado."
+        "Autocontrole tem relação com a disciplina para seguir um plano financeiro ao longo do tempo. Quando ele "
+        "é baixo, pode aparecer em aportes irregulares, resgates antes da hora, dificuldade de separar dinheiro "
+        "para gastar e dinheiro para investir, ou mudanças frequentes de estratégia."
     ),
 }
 
@@ -203,173 +207,172 @@ ANALISES_INTEGRADAS = {
     "Conservador": {
         "Aversão à Perda": {
             "leitura": (
-                "O investidor conservador com predominância de aversão à perda tende a priorizar segurança e "
-                "previsibilidade. Pode evitar investimentos com oscilação, mesmo quando eles são adequados ao seu "
-                "prazo e objetivo. Esse comportamento pode proteger contra riscos excessivos, mas também pode "
-                "limitar o crescimento do patrimônio no longo prazo."
+                "Seu resultado mostra uma busca forte por segurança e previsibilidade. Isso pode ajudar a evitar "
+                "riscos exagerados, mas também pode fazer você evitar investimentos que oscilam um pouco, mesmo "
+                "quando eles poderiam fazer sentido para objetivos de prazo maior."
             ),
-            "risco": "Manter recursos em alternativas muito conservadoras por medo de perdas temporárias.",
+            "risco": "Deixar todo o dinheiro em opções muito seguras por medo de quedas temporárias.",
             "indicacoes": [
-                "Separar reserva de emergência dos recursos de médio e longo prazo.",
-                "Explicar a diferença entre perda permanente e oscilação temporária.",
-                "Usar produtos com liquidez e risco compatíveis, evoluindo gradualmente.",
-                "Trabalhar cenários de perda antes da aplicação.",
+                "Separe a reserva de emergência do dinheiro destinado a objetivos de médio e longo prazo.",
+                "Entenda a diferença entre uma queda temporária e uma perda definitiva.",
+                "Comece com escolhas simples e avance aos poucos, conforme ganhar segurança.",
+                "Antes de investir, converse sobre o que pode acontecer em um cenário ruim.",
             ],
         },
         "Ancoragem": {
             "leitura": (
-                "O investidor conservador com ancoragem pode se prender a referências antigas, como rentabilidade "
-                "passada, taxa anterior, poupança ou produtos que já conhece. Isso pode dificultar a atualização da "
-                "carteira quando o cenário econômico muda."
+                "Você pode se prender a referências antigas, como uma taxa que recebeu antes, a poupança ou "
+                "produtos que já conhece. Isso é compreensível, mas pode dificultar mudanças quando o cenário "
+                "econômico já não é o mesmo."
             ),
-            "risco": "Tomar decisões olhando para referências antigas, e não para o cenário atual.",
+            "risco": "Comparar tudo com o passado e deixar de avaliar o que faz sentido hoje.",
             "indicacoes": [
-                "Comparar produtos com benchmarks atuais.",
-                "Explicar mudanças de juros, inflação e liquidez.",
-                "Reforçar que retorno passado não garante retorno futuro.",
-                "Conectar a recomendação ao objetivo e ao prazo do investidor.",
+                "Compare as opções usando informações atuais.",
+                "Observe se juros, inflação e prazo mudaram desde sua referência antiga.",
+                "Lembre que retorno passado não garante retorno futuro.",
+                "Escolha com base no seu objetivo e no prazo em que pretende usar o dinheiro.",
             ],
         },
         "Excesso de Confiança": {
             "leitura": (
-                "O investidor conservador com excesso de confiança pode acreditar que entende totalmente os riscos "
-                "de produtos que parecem simples ou conhecidos. Isso pode gerar concentração excessiva em poucas "
-                "alternativas ou pouca disposição para revisar a carteira."
+                "Mesmo com preferência por segurança, você pode confiar demais em produtos que parecem simples ou "
+                "familiares. O cuidado aqui é não achar que algo conhecido é automaticamente livre de risco."
             ),
-            "risco": "Subestimar riscos por familiaridade com determinados produtos.",
+            "risco": "Colocar dinheiro demais em opções conhecidas sem avaliar todos os riscos.",
             "indicacoes": [
-                "Apresentar riscos de crédito, liquidez e concentração de forma simples.",
-                "Evitar linguagem de certeza.",
-                "Usar checklist antes da aplicação.",
-                "Revisar periodicamente se o produto continua adequado.",
+                "Pergunte quais riscos existem, mesmo em investimentos aparentemente simples.",
+                "Evite decisões baseadas em certeza absoluta.",
+                "Use uma lista simples antes de aplicar: objetivo, prazo, risco e possibilidade de resgate.",
+                "Revise de tempos em tempos se o investimento ainda combina com você.",
             ],
         },
         "Autocontrole": {
             "leitura": (
-                "O investidor conservador com viés de autocontrole pode ter dificuldade em manter disciplina de "
-                "aportes ou separar consumo de investimento. Mesmo tendo baixa tolerância a risco, pode comprometer "
-                "o planejamento por falta de regularidade."
+                "Você tende a valorizar segurança, mas pode ter dificuldade para manter regularidade nos aportes "
+                "ou separar o dinheiro de gastar do dinheiro de investir. Nesse caso, o maior desafio não é o risco "
+                "do investimento, e sim manter o plano funcionando mês após mês."
             ),
-            "risco": "Dificuldade de manter aportes e planejamento financeiro consistente.",
+            "risco": "Ter um plano adequado, mas não conseguir manter constância.",
             "indicacoes": [
-                "Criar aportes automáticos.",
-                "Definir metas simples e mensais.",
-                "Separar dinheiro de curto prazo dos investimentos.",
-                "Acompanhar evolução patrimonial periodicamente.",
+                "Crie aportes automáticos ou lembretes mensais.",
+                "Defina metas simples e realistas.",
+                "Separe o dinheiro do dia a dia do dinheiro dos investimentos.",
+                "Acompanhe sua evolução periodicamente, sem precisar mudar tudo a cada revisão.",
             ],
         },
     },
     "Moderado": {
         "Aversão à Perda": {
             "leitura": (
-                "O investidor moderado com aversão à perda aceita algum nível de risco, mas pode reagir mal diante "
-                "de oscilações negativas. Na prática, pode até escolher produtos moderados, mas se sentir "
-                "desconfortável quando o resultado fica abaixo do esperado no curto prazo."
+                "Você aceita algum risco para buscar resultados melhores, mas pode se incomodar bastante quando "
+                "o investimento cai ou fica abaixo do esperado por um período. Na prática, pode escolher uma "
+                "estratégia moderada, mas sentir vontade de sair dela quando aparecem oscilações."
             ),
-            "risco": "Abandonar uma estratégia adequada por desconforto com oscilações temporárias.",
+            "risco": "Desistir de uma estratégia adequada por causa de quedas temporárias.",
             "indicacoes": [
-                "Alinhar expectativa de volatilidade antes da aplicação.",
-                "Trabalhar horizonte de investimento e objetivo.",
-                "Usar diversificação para reduzir desconforto.",
-                "Evitar decisões impulsivas em momentos de queda.",
+                "Antes de investir, entenda que tipo de oscilação pode acontecer.",
+                "Ligue cada investimento a um objetivo e a um prazo.",
+                "Diversifique para não depender de uma única escolha.",
+                "Evite tomar decisões no calor de uma queda.",
             ],
         },
         "Ancoragem": {
             "leitura": (
-                "O investidor moderado com ancoragem pode comparar novas decisões com taxas, retornos ou "
-                "experiências anteriores. Isso pode fazer com que ele rejeite boas alternativas atuais por estar "
-                "preso a uma referência passada."
+                "Você pode comparar novas decisões com taxas, retornos ou experiências que teve no passado. "
+                "Essa referência ajuda a lembrar do que já viveu, mas pode fazer você rejeitar boas alternativas "
+                "atuais simplesmente porque elas são diferentes do que viu antes."
             ),
-            "risco": "Decidir com base em retorno histórico, taxa antiga ou experiência anterior.",
+            "risco": "Escolher olhando demais para uma experiência antiga e pouco para o cenário atual.",
             "indicacoes": [
-                "Reenquadrar a conversa para objetivo, prazo e cenário atual.",
-                "Comparar alternativas com indicadores atuais.",
-                "Explicar por que determinado produto fazia sentido antes e pode não fazer agora.",
-                "Registrar o racional da decisão no momento da aplicação.",
+                "Volte a decisão para o objetivo, o prazo e o momento atual.",
+                "Compare alternativas com informações de hoje.",
+                "Entenda por que algo que fazia sentido antes pode não ser ideal agora.",
+                "Anote o motivo da escolha para revisar depois com mais clareza.",
             ],
         },
         "Excesso de Confiança": {
             "leitura": (
-                "O investidor moderado com excesso de confiança pode acreditar que consegue escolher os melhores "
-                "momentos ou produtos com facilidade. Isso pode levar a concentração, giro excessivo ou troca "
-                "frequente de estratégia."
+                "Você pode acreditar que consegue identificar bons momentos ou bons produtos com facilidade. "
+                "Isso pode levar a trocar de estratégia com frequência ou colocar dinheiro demais em uma opção "
+                "na qual você está muito confiante."
             ),
-            "risco": "Aumentar risco sem perceber, por confiança excessiva na própria decisão.",
+            "risco": "Assumir mais risco do que imagina por confiar demais na própria decisão.",
             "indicacoes": [
-                "Definir limites de concentração por produto e emissor.",
-                "Reforçar diversificação.",
-                "Usar cenários base, otimista e adverso.",
-                "Combinar revisões periódicas em vez de mudanças impulsivas.",
+                "Defina um limite para quanto colocar em cada investimento.",
+                "Diversifique para não depender de uma única aposta.",
+                "Pense no cenário bom, no cenário normal e no cenário ruim antes de decidir.",
+                "Prefira revisões programadas em vez de mudanças por impulso.",
             ],
         },
         "Autocontrole": {
             "leitura": (
-                "O investidor moderado com viés de autocontrole pode ter dificuldade de manter constância. Pode "
-                "alternar entre momentos de disciplina e momentos de resgate, consumo ou mudança de plano."
+                "Você pode ter bons planos de investimento, mas dificuldade para manter constância. Pode passar "
+                "por períodos de disciplina e depois interromper aportes, resgatar dinheiro ou mudar de objetivo."
             ),
-            "risco": "Prejudicar o planejamento por falta de regularidade.",
+            "risco": "Prejudicar bons objetivos por falta de regularidade.",
             "indicacoes": [
-                "Estabelecer aportes programados.",
-                "Criar metas por prazo.",
-                "Separar objetivos de curto, médio e longo prazo.",
-                "Usar acompanhamento periódico com o assessor.",
+                "Estabeleça aportes programados ou lembretes mensais.",
+                "Crie metas por prazo: curto, médio e longo.",
+                "Separe o dinheiro de cada objetivo.",
+                "Faça acompanhamentos periódicos para ajustar o plano sem abandonar tudo.",
             ],
         },
     },
     "Arrojado": {
         "Aversão à Perda": {
             "leitura": (
-                "O investidor arrojado com aversão à perda pode apresentar uma contradição importante: aceita risco "
-                "para buscar maior retorno, mas pode reagir mal quando as perdas ou oscilações aparecem. Isso pode "
-                "levar a decisões emocionais em momentos de mercado negativo."
+                "Você aceita mais risco para buscar retornos maiores, mas pode se incomodar bastante quando "
+                "aparecem quedas. Essa combinação pede atenção, porque é comum entrar em uma estratégia com "
+                "confiança e depois sentir vontade de sair quando o mercado passa por um momento ruim."
             ),
-            "risco": "Aceitar risco na entrada, mas abandonar a estratégia durante oscilações.",
+            "risco": "Aceitar risco no começo, mas abandonar a estratégia em uma queda temporária.",
             "indicacoes": [
-                "Simular perdas possíveis antes da aplicação.",
-                "Definir limites de exposição e concentração.",
-                "Trabalhar horizonte de longo prazo.",
-                "Evitar resgates impulsivos em momentos de queda.",
+                "Antes de investir, imagine como reagiria se houvesse uma queda.",
+                "Defina limites para quanto colocar em investimentos de maior risco.",
+                "Mantenha clareza sobre o prazo necessário para a estratégia.",
+                "Evite resgatar por impulso em momentos de baixa.",
             ],
         },
         "Ancoragem": {
             "leitura": (
-                "O investidor arrojado com ancoragem pode insistir em repetir estratégias que deram certo no "
-                "passado, mesmo quando o cenário mudou. Pode se prender a preço de entrada, rentabilidade anterior "
-                "ou ativos que já performaram bem."
+                "Você pode querer repetir estratégias que deram certo no passado. Isso pode ser útil como "
+                "aprendizado, mas vira um risco quando a decisão se baseia só no que já aconteceu, sem olhar se "
+                "o cenário atual ainda favorece a mesma escolha."
             ),
-            "risco": "Buscar retorno futuro com base excessiva em experiências passadas.",
+            "risco": "Esperar que o futuro repita o passado, mesmo quando as condições mudaram.",
             "indicacoes": [
-                "Comparar a tese atual com o cenário econômico presente.",
-                "Evitar decisões baseadas apenas em histórico de rentabilidade.",
-                "Usar benchmarks, risco, liquidez e horizonte como critérios.",
-                "Documentar o racional da recomendação.",
+                "Compare a ideia atual com o cenário de hoje.",
+                "Evite decidir apenas porque algo rendeu bem antes.",
+                "Avalie risco, prazo e possibilidade de resgate antes de investir.",
+                "Anote o motivo da decisão para conseguir revisar depois.",
             ],
         },
         "Excesso de Confiança": {
             "leitura": (
-                "O investidor arrojado com excesso de confiança tende a assumir riscos elevados com maior "
-                "convicção. Pode concentrar demais, girar carteira com frequência ou subestimar cenários adversos."
+                "Você pode assumir riscos maiores com bastante convicção. Isso combina com um perfil mais "
+                "arrojado, mas exige cuidado para não concentrar demais, trocar de investimento o tempo todo ou "
+                "deixar de considerar que o cenário pode ir contra sua expectativa."
             ),
-            "risco": "Exposição excessiva por acreditar demais na própria capacidade de prever resultados.",
+            "risco": "Expor demais o patrimônio por acreditar que consegue prever os resultados.",
             "indicacoes": [
-                "Definir limites de concentração por ativo, produto e emissor.",
-                "Usar política de rebalanceamento.",
-                "Apresentar cenários de estresse.",
-                "Evitar linguagem de certeza e reforçar gestão de risco.",
+                "Defina limites para cada investimento ou ideia.",
+                "Revise a carteira em datas combinadas, não a cada impulso.",
+                "Pense também no que pode dar errado.",
+                "Mantenha diversificação mesmo quando estiver muito confiante.",
             ],
         },
         "Autocontrole": {
             "leitura": (
-                "O investidor arrojado com viés de autocontrole pode buscar oportunidades de maior risco, mas ter "
-                "dificuldade em manter disciplina, estratégia e horizonte. Pode agir por impulso, alternando entre "
-                "euforia e mudança rápida de decisão."
+                "Você pode buscar oportunidades de maior risco, mas ter dificuldade para manter disciplina e "
+                "seguir o plano até o fim. O ponto de atenção é agir por impulso, trocar de estratégia rápido "
+                "demais ou deixar a empolgação do momento mandar na decisão."
             ),
-            "risco": "Tomar decisões rápidas sem seguir plano previamente definido.",
+            "risco": "Tomar decisões rápidas demais, sem seguir um plano definido antes.",
             "indicacoes": [
-                "Criar regras claras antes da aplicação.",
-                "Definir percentual máximo para ativos de maior risco.",
-                "Manter parte da carteira em estratégias estruturadas.",
-                "Revisar decisões com base em planejamento, não em impulso.",
+                "Crie regras antes de investir, não durante a emoção do momento.",
+                "Defina um limite para investimentos de maior risco.",
+                "Mantenha uma parte da carteira em estratégias mais estáveis.",
+                "Revise decisões com base no plano, não apenas na vontade do dia.",
             ],
         },
     },
